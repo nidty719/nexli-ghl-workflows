@@ -1,0 +1,49 @@
+PROMPT FOR NEXLI FUNDING NURTURE EMAIL CONTENT
+
+Generate engaging content for a business funding nurture email with the following parameters:
+
+CONTACT CONTEXT:
+- Business owner's first name: {{contact.first_name}}
+- Business type: {{contact.business_type}}
+- Reason they didn't convert: {{contact.exit_reason}} [Options: "docs-not-submitted", "cold-lead", "lender-decline", "offer-declined"]
+- Time since last contact: {{days_since_contact}} days
+
+EMAIL TYPE: 
+{{email_type}} [Options: "educational", "seasonal", "industry-specific", "success-story", "offer-update"]
+
+CONTENT PARAMETERS:
+- Tone: Helpful, knowledgeable, not pushy
+- Length: 3-4 short paragraphs for email, 1-2 sentences for SMS (160 chars max)
+- Must include a hook that addresses a common business funding pain point
+- Should position Nexli Funding as a solution without being salesy
+- Must not make specific loan amount promises or guarantees
+- Can reference general funding ranges ($10k-$500k) but no specific rates
+
+EDUCATIONAL TOPICS (if educational):
+- Understanding business credit vs. personal credit
+- Cash flow management strategies
+- How to prepare for a funding application
+- Types of business funding options (term loans, lines of credit, merchant cash advances)
+- Timing funding with business growth opportunities
+- Using funding strategically to scale
+- Industry-specific funding advice
+
+OUTPUT FORMAT:
+For Email:
+1. Subject line ideas (3 options)
+2. Preview text (max 90 characters)
+3. Main heading
+4. Body content (3-4 paragraphs)
+5. CTA suggestion
+6. Educational sidebar content (if applicable)
+
+For SMS:
+1. Message content (max 160 characters)
+2. CTA suggestion
+
+COMPLIANCE NOTES:
+- Avoid promises of approval
+- No specific rates/terms
+- Must maintain professional tone
+- No pushy language or artificial urgency
+- Include opt-out instructions in SMS 

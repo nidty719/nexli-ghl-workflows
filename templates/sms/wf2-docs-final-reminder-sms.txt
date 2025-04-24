@@ -1,0 +1,1 @@
+FINAL NOTICE: {{contact.first_name}}, your funding application will expire in 24hrs without documents. Complete now to avoid starting over: {{portal_link}} Need immediate help? Call (888) 433-1523. -Noah, Nexli Funding 

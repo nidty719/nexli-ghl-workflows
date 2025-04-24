@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{email_subject}}</title>
+  <style>
+    /* Base styles */
+    body, p, h1, h2, h3, h4, h5, h6 {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+    p, li {
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+    h1 {
+      color: #2B6B6B;
+      font-size: 30px;
+      margin-bottom: 25px;
+    }
+    h2 {
+      color: #2B6B6B;
+      font-size: 22px;
+      margin-bottom: 15px;
+    }
+    a {
+      color: #2B6B6B;
+      text-decoration: underline;
+    }
+    /* Responsive styles */
+    @media only screen and (max-width: 600px) {
+      .full-width {
+        width: 100% !important;
+      }
+      .responsive-padding {
+        padding: 15px !important;
+      }
+      .mobile-text-center {
+        text-align: center !important;
+      }
+      h1 {
+        font-size: 24px !important;
+      }
+      h2 {
+        font-size: 20px !important;
+      }
+      p, li {
+        font-size: 16px !important;
+        line-height: 1.5;
+      }
+      .cta-button {
+        display: block !important;
+        text-align: center !important;
+        padding: 16px 10px !important;
+      }
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f5f5f5; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
+  <!-- Gmail/Outlook fix: Ensure proper rendering -->
+  <div style="display:none; font-size:1px; color:#ffffff; line-height:1px; max-height:0px; max-width:0px; opacity:0; overflow:hidden;">
+    {{preview_text}}
+  </div>
+  
+  <center>
+    <!-- Main Table Container -->
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f5f5f5;">
+      <tr>
+        <td align="center" style="padding: 20px 0;">
+          <!-- Email Content Container -->
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" class="full-width" style="width: 600px; background-color: #ffffff; margin: 0 auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <!-- Header -->
+            <tr>
+              <td style="background-color: #2B6B6B; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+                <table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="background-color: #c1ff72; width: 60px; height: 60px; border-radius: 50%; text-align: center; vertical-align: middle;">
+                      <span style="font-size: 32px; font-weight: bold; color: #2B6B6B;">$</span>
+                    </td>
+                    <td width="15"></td>
+                    <td style="font-size: 32px; font-weight: bold; text-align: left;">
+                      <span style="color: #ffffff;">Nexli</span> <span style="color: #c1ff72;">Funding</span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Body -->
+            <tr>
+              <td style="padding: 30px 20px;" class="responsive-padding">
+                <!-- Optional Feature Image -->
+                {{#if feature_image}}
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-bottom: 25px;">
+                  <tr>
+                    <td>
+                      <img src="{{feature_image}}" alt="{{feature_image_alt}}" width="100%" style="display: block; max-width: 100%; border-radius: 8px;">
+                    </td>
+                  </tr>
+                </table>
+                {{/if}}
+
+                <h1 style="color: #2B6B6B; font-size: 30px; margin-bottom: 25px;">{{email_heading}}</h1>
+                <p>Hi {{contact.first_name}},</p>
+                
+                <!-- AI-generated content placeholder -->
+                {{ai_generated_content}}
+                
+                <!-- CTA Button -->
+                <table role="presentation" align="center" style="margin: 25px auto;" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="background-color: #CDF86C; border-radius: 50px; text-align: center;">
+                      <a href="{{cta_link}}" 
+                         class="cta-button"
+                         style="display: inline-block; padding: 16px 32px; text-decoration: none; color: #333; font-weight: 600; font-size: 18px;">
+                        {{cta_text}}
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Optional Educational Content Box -->
+                {{#if educational_content}}
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f8f9fa; border-radius: 8px; margin: 25px 0; border: 1px solid #e1e1e1;">
+                  <tr>
+                    <td style="padding: 20px;">
+                      <h2 style="color: #2B6B6B; font-size: 20px; margin-top: 0; margin-bottom: 15px;">{{educational_heading}}</h2>
+                      {{educational_content}}
+                    </td>
+                  </tr>
+                </table>
+                {{/if}}
+
+                <!-- Contact Info -->
+                <table width="100%" style="background-color: #E8F0F0; border-radius: 8px; margin-top: 20px;" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding: 20px; text-align: center;">
+                      <p style="margin-bottom: 0;">Questions about business funding? Call us at <a href="tel:8884331523" style="color: #2B6B6B; font-weight: 600;">(888) 433-1523</a>.</p>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Signature -->
+                <p style="margin-top: 30px; font-weight: 600; color: #2B6B6B;">{{user.first_name}}</p>
+                <p style="color: #666;">Nexli Funding Team</p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 12px; color: #666; border-radius: 0 0 8px 8px;">
+                © 2025 Nexli Funding. All rights reserved.<br>
+                <a href="https://www.nexlifunding.com/privacy" style="color: #2B6B6B;">Privacy Policy</a> | 
+                <a href="https://www.nexlifunding.com/terms" style="color: #2B6B6B;">Terms of Service</a><br><br>
+                <span style="font-size: 11px;">3751 N Park Rd, Hollywood, Florida 33021</span><br>
+                <span style="font-size: 11px;">Don't want to receive these emails? <a href="{{unsubscribe_link}}" style="color: #2B6B6B;">Unsubscribe</a></span>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </center>
+</body>
+</html> 

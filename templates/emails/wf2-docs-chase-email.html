@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Nexli Funding Application</title>
+  <style>
+    /* Base styles */
+    body, p, h1, h2, h3, h4, h5, h6 {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+    p, li {
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+    h1 {
+      color: #2B6B6B;
+      font-size: 30px;
+      margin-bottom: 25px;
+    }
+    a {
+      color: #2B6B6B;
+      text-decoration: underline;
+    }
+    /* Responsive styles */
+    @media only screen and (max-width: 600px) {
+      .full-width {
+        width: 100% !important;
+      }
+      .responsive-padding {
+        padding: 15px !important;
+      }
+      .mobile-text-center {
+        text-align: center !important;
+      }
+      .timeline-cell {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 15px !important;
+      }
+      h1 {
+        font-size: 24px !important;
+      }
+      p, li {
+        font-size: 16px !important;
+        line-height: 1.5;
+      }
+      .cta-button {
+        display: block !important;
+        text-align: center !important;
+        padding: 16px 10px !important;
+      }
+      .status-container td {
+        display: table-cell !important;
+        vertical-align: middle !important;
+      }
+      .status-text {
+        padding-left: 10px !important;
+      }
+      .checkmark-container {
+        width: 60px !important;
+        min-width: 60px !important;
+      }
+      .logo-text {
+        font-size: 24px !important;
+      }
+      .logo-circle {
+        width: 50px !important;
+        height: 50px !important;
+        min-width: 50px !important;
+      }
+      .logo-dollar {
+        font-size: 24px !important;
+      }
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f5f5f5; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
+  <!-- Gmail/Outlook fix: Ensure proper rendering -->
+  <div style="display:none; font-size:1px; color:#ffffff; line-height:1px; max-height:0px; max-width:0px; opacity:0; overflow:hidden;">
+    Good news on your Nexli Funding application - here's what to do next...
+  </div>
+  
+  <center>
+    <!-- Main Table Container -->
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f5f5f5;">
+      <tr>
+        <td align="center" style="padding: 20px 0;">
+          <!-- Email Content Container -->
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" class="full-width" style="width: 600px; background-color: #ffffff; margin: 0 auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <!-- Header -->
+            <tr>
+              <td style="background-color: #2B6B6B; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+                <table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td class="logo-circle" style="background-color: #c1ff72; width: 60px; height: 60px; border-radius: 50%; text-align: center; vertical-align: middle;">
+                      <span class="logo-dollar" style="font-size: 32px; font-weight: bold; color: #2B6B6B;">$</span>
+                    </td>
+                    <td width="15"></td>
+                    <td class="logo-text" style="font-size: 32px; font-weight: bold; text-align: left;">
+                      <span style="color: #ffffff;">Nexli</span> <span style="color: #c1ff72;">Funding</span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Status -->
+            <tr>
+              <td style="padding: 30px 20px;" class="responsive-padding">
+                <table width="100%" style="background-color: #f8f9fa; border-radius: 8px; margin-bottom: 25px;" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding: 20px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" class="status-container" style="width: 100%;">
+                        <tr>
+                          <td class="checkmark-container" style="vertical-align: middle; width: 70px; min-width: 70px;">
+                            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+                              <tr>
+                                <td style="background-color: #dfff80; width: 60px; height: 60px; border-radius: 50%; text-align: center; vertical-align: middle; color: #4a7c59; font-size: 26px; font-weight: bold;">
+                                  &#10004;
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                          <td width="15"></td>
+                          <td class="status-text" style="vertical-align: middle;">
+                            <div style="font-size: 18px; font-weight: bold; color: #000; margin-bottom: 5px;">You're almost there!</div>
+                            <div style="color: #666; font-size: 15px; line-height: 1.4;">You're off to a great start — let's get your full application in next</div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <h1 style="color: #2B6B6B; font-size: 30px; margin-bottom: 25px;">Next Steps to Complete Your Application</h1>
+                <p>Hi {{contact.first_name}},</p>
+                <p>I wanted to follow up on your recent application with Nexli Funding.</p>
+                <p><strong>Based on your initial information, you are qualified!</strong> To move forward, we need you to complete the full application at:</p>
+
+                <!-- CTA -->
+                <table role="presentation" align="center" style="margin: 20px auto 30px auto;" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="background-color: #CDF86C; border-radius: 50px;">
+                      <a href="https://www.nexlifunding.com/document-collection" 
+                         class="cta-button"
+                         style="display: inline-block; padding: 16px 32px; text-decoration: none; color: #333; font-weight: 600; font-size: 18px;">
+                        → Complete Your Application
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+
+                <p>This will only take about 5 minutes, and it allows us to:</p>
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                  <tr>
+                    <td style="padding: 0 0 0 20px;">
+                      <ul style="margin-top: 0;">
+                        <li style="margin-bottom: 8px;">Get you pre-qualified for specific funding options</li>
+                        <li style="margin-bottom: 8px;">Present amounts and terms</li>
+                        <li style="margin-bottom: 8px;">Match you with the right funding solution</li>
+                      </ul>
+                    </td>
+                  </tr>
+                </table>
+
+                <p><strong>The sooner you complete this step, the faster we can help your business access capital.</strong></p>
+
+                <!-- Contact Info -->
+                <table width="100%" style="background-color: #E8F0F0; border-radius: 8px; margin-top: 20px;" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding: 20px; text-align: center;">
+                      Questions? Call or text me directly at <a href="tel:8884331523" style="color: #2B6B6B; font-weight: 600;">(888) 433-1523</a>.
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Timeline - Horizontal -->
+                <table width="100%" style="margin: 30px 0;" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td>
+                      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td align="center" width="33%" style="padding: 10px;">
+                            <div style="background-color: #CDF86C; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; margin: 0 auto; line-height: 30px; text-align: center;">1</div>
+                            <div style="color: #2B6B6B; font-weight: bold; margin-top: 5px; text-align: center;">Complete Application</div>
+                            <div style="color: #666; font-size: 14px; text-align: center;">5 minutes</div>
+                          </td>
+                          <td align="center" width="33%" style="padding: 10px;">
+                            <div style="background-color: #CDF86C; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; margin: 0 auto; line-height: 30px; text-align: center;">2</div>
+                            <div style="color: #2B6B6B; font-weight: bold; margin-top: 5px; text-align: center;">Review Offers</div>
+                            <div style="color: #666; font-size: 14px; text-align: center;">Same day</div>
+                          </td>
+                          <td align="center" width="33%" style="padding: 10px;">
+                            <div style="background-color: #CDF86C; width: 30px; height: 30px; border-radius: 50%; font-weight: bold; margin: 0 auto; line-height: 30px; text-align: center;">3</div>
+                            <div style="color: #2B6B6B; font-weight: bold; margin-top: 5px; text-align: center;">Get Funded</div>
+                            <div style="color: #666; font-size: 14px; text-align: center;">As fast as 24 hours</div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <p style="margin-top: 30px; font-weight: 600; color: #2B6B6B;">{{user.first_name}}</p>
+                <p style="color: #666;">Nexli Funding Team</p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 12px; color: #666; border-radius: 0 0 8px 8px;">
+                © 2025 Nexli Funding. All rights reserved.<br>
+                <a href="https://www.nexlifunding.com/privacy" style="color: #2B6B6B;">Privacy Policy</a> | 
+                <a href="https://www.nexlifunding.com/terms" style="color: #2B6B6B;">Terms of Service</a><br><br>
+                <span style="font-size: 11px;">Applying will not affect your credit score.</span><br>
+                <span style="font-size: 11px;">3751 N Park Rd, Hollywood, Florida 33021</span>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </center>
+</body>
+</html> 

@@ -1,0 +1,1 @@
+Hi {{contact.first_name}}, we hope your new funding is helping your business grow! Would you mind sharing your experience? Your feedback helps us improve: {{review_url}} Thanks for choosing Nexli Funding! -Noah 

@@ -1,0 +1,1 @@
+Hi {{contact.first_name}}, just a reminder that we're waiting for your documents to move forward with your funding application. Complete here: {{portal_link}} Need help? Call us at (888) 433-1523. -Noah, Nexli Funding 

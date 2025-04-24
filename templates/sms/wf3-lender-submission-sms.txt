@@ -1,0 +1,1 @@
+Great news, {{contact.first_name}}! Your application has been submitted to our lending partners. We'll contact you within 24hrs with funding options. Check your email for details. Questions? Call (888) 433-1523. -Noah, Nexli Funding 

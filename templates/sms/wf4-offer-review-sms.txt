@@ -1,0 +1,1 @@
+CONGRATULATIONS {{contact.first_name}}! Your funding offer is APPROVED! Check your email for details or schedule your offer review call: {{calendly_link}} Funding can be as fast as 24hrs after approval. -Noah, Nexli Funding 

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Was Your Funding Experience?</title>
+  <style>
+    /* Base styles */
+    body, p, h1, h2, h3, h4, h5, h6 {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+    p, li {
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+    h1 {
+      color: #2B6B6B;
+      font-size: 30px;
+      margin-bottom: 25px;
+    }
+    a {
+      color: #2B6B6B;
+      text-decoration: underline;
+    }
+    /* Responsive styles */
+    @media only screen and (max-width: 600px) {
+      .full-width {
+        width: 100% !important;
+      }
+      .responsive-padding {
+        padding: 15px !important;
+      }
+      .mobile-text-center {
+        text-align: center !important;
+      }
+      h1 {
+        font-size: 24px !important;
+      }
+      p, li {
+        font-size: 16px !important;
+        line-height: 1.5;
+      }
+      .review-button {
+        display: block !important;
+        width: 100% !important;
+        margin: 10px 0 !important;
+      }
+      .star-rating {
+        width: 100% !important;
+      }
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f5f5f5; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
+  <!-- Gmail/Outlook fix: Ensure proper rendering -->
+  <div style="display:none; font-size:1px; color:#ffffff; line-height:1px; max-height:0px; max-width:0px; opacity:0; overflow:hidden;">
+    We'd love to hear about your recent funding experience with Nexli Funding...
+  </div>
+  
+  <center>
+    <!-- Main Table Container -->
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f5f5f5;">
+      <tr>
+        <td align="center" style="padding: 20px 0;">
+          <!-- Email Content Container -->
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" class="full-width" style="width: 600px; background-color: #ffffff; margin: 0 auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <!-- Header -->
+            <tr>
+              <td style="background-color: #2B6B6B; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+                <table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="background-color: #c1ff72; width: 60px; height: 60px; border-radius: 50%; text-align: center; vertical-align: middle;">
+                      <span style="font-size: 32px; font-weight: bold; color: #2B6B6B;">$</span>
+                    </td>
+                    <td width="15"></td>
+                    <td style="font-size: 32px; font-weight: bold; text-align: left;">
+                      <span style="color: #ffffff;">Nexli</span> <span style="color: #c1ff72;">Funding</span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Body -->
+            <tr>
+              <td style="padding: 30px 20px;" class="responsive-padding">
+                <h1 style="color: #2B6B6B; font-size: 30px; margin-bottom: 25px;">How Was Your Funding Experience?</h1>
+                <p>Hi {{contact.first_name}},</p>
+                <p>Congratulations again on securing funding for your business! We hope the process was smooth and that the capital is already helping your business grow.</p>
+                
+                <p>Would you mind taking a moment to share your experience with Nexli Funding? Your feedback helps us improve our service and lets other business owners know what to expect.</p>
+
+                <!-- Star Rating System -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin: 30px 0;" class="star-rating">
+                  <tr>
+                    <td style="text-align: center; font-weight: bold; font-size: 18px; padding-bottom: 15px;">
+                      How would you rate your experience?
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="text-align: center;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin: 0 auto;">
+                        <tr>
+                          <td style="padding: 0 5px;">
+                            <a href="{{review_url}}?rating=1" style="text-decoration: none; color: #ffc107; font-size: 40px;">★</a>
+                          </td>
+                          <td style="padding: 0 5px;">
+                            <a href="{{review_url}}?rating=2" style="text-decoration: none; color: #ffc107; font-size: 40px;">★</a>
+                          </td>
+                          <td style="padding: 0 5px;">
+                            <a href="{{review_url}}?rating=3" style="text-decoration: none; color: #ffc107; font-size: 40px;">★</a>
+                          </td>
+                          <td style="padding: 0 5px;">
+                            <a href="{{review_url}}?rating=4" style="text-decoration: none; color: #ffc107; font-size: 40px;">★</a>
+                          </td>
+                          <td style="padding: 0 5px;">
+                            <a href="{{review_url}}?rating=5" style="text-decoration: none; color: #ffc107; font-size: 40px;">★</a>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="text-align: center; padding-top: 5px; font-size: 12px; color: #666;">Poor</td>
+                          <td style="text-align: center; padding-top: 5px; font-size: 12px; color: #666;"></td>
+                          <td style="text-align: center; padding-top: 5px; font-size: 12px; color: #666;">Average</td>
+                          <td style="text-align: center; padding-top: 5px; font-size: 12px; color: #666;"></td>
+                          <td style="text-align: center; padding-top: 5px; font-size: 12px; color: #666;">Excellent</td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Review Platform Buttons -->
+                <p style="text-align: center; font-weight: bold; margin-top: 30px;">Or leave a review on your preferred platform:</p>
+                
+                <table role="presentation" align="center" style="margin: 20px auto;" border="0" cellpadding="0" cellspacing="0" width="100%">
+                  <tr>
+                    <td align="center">
+                      <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+                        <tr>
+                          <td style="padding: 5px;">
+                            <a href="https://www.google.com/search?q=Nexli+Funding+reviews" class="review-button" style="background-color: #CDF86C; border-radius: 50px; padding: 12px 24px; text-decoration: none; color: #333; font-weight: 600; display: inline-block;">
+                              Google Reviews
+                            </a>
+                          </td>
+                          <td style="padding: 5px;">
+                            <a href="https://www.trustpilot.com/review/nexlifunding.com" class="review-button" style="background-color: #CDF86C; border-radius: 50px; padding: 12px 24px; text-decoration: none; color: #333; font-weight: 600; display: inline-block;">
+                              Trustpilot
+                            </a>
+                          </td>
+                          <td style="padding: 5px;">
+                            <a href="https://www.yelp.com/biz/nexli-funding-hollywood" class="review-button" style="background-color: #CDF86C; border-radius: 50px; padding: 12px 24px; text-decoration: none; color: #333; font-weight: 600; display: inline-block;">
+                              Yelp
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <p>Your feedback helps us grow and assists other business owners looking for trusted funding options. It only takes a minute but means a lot to our small team.</p>
+
+                <p>Thank you for choosing Nexli Funding as your business funding partner!</p>
+
+                <!-- Signature -->
+                <p style="margin-top: 30px; font-weight: 600; color: #2B6B6B;">{{user.first_name}}</p>
+                <p style="color: #666;">Nexli Funding Team</p>
+
+                <!-- PS Message -->
+                <p style="margin-top: 20px; font-size: 14px; font-style: italic;">P.S. If you have any questions about your funding or need any assistance, please don't hesitate to reach out. We're here to support your business growth!</p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 12px; color: #666; border-radius: 0 0 8px 8px;">
+                © 2025 Nexli Funding. All rights reserved.<br>
+                <a href="https://www.nexlifunding.com/privacy" style="color: #2B6B6B;">Privacy Policy</a> | 
+                <a href="https://www.nexlifunding.com/terms" style="color: #2B6B6B;">Terms of Service</a><br><br>
+                <span style="font-size: 11px;">3751 N Park Rd, Hollywood, Florida 33021</span>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </center>
+</body>
+</html> 

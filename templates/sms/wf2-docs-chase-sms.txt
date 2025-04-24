@@ -1,0 +1,1 @@
+Hi {{contact.first_name}}, good news! You're pre-qualified for funding with Nexli. To proceed, please complete your application at: {{portal_link}} (takes just 5 min). Questions? Call (888) 433-1523. -Noah, Nexli Funding 

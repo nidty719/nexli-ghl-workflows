@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Funding Offer Is Ready - Nexli Funding</title>
+  <style>
+    /* Base styles */
+    body, p, h1, h2, h3, h4, h5, h6 {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+    p, li {
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+    h1 {
+      color: #2B6B6B;
+      font-size: 30px;
+      margin-bottom: 25px;
+    }
+    h2 {
+      color: #2B6B6B;
+      font-size: 22px;
+      margin-bottom: 15px;
+    }
+    a {
+      color: #2B6B6B;
+      text-decoration: underline;
+    }
+    /* Responsive styles */
+    @media only screen and (max-width: 600px) {
+      .full-width {
+        width: 100% !important;
+      }
+      .responsive-padding {
+        padding: 15px !important;
+      }
+      .mobile-text-center {
+        text-align: center !important;
+      }
+      h1 {
+        font-size: 24px !important;
+      }
+      h2 {
+        font-size: 20px !important;
+      }
+      p, li {
+        font-size: 16px !important;
+        line-height: 1.5;
+      }
+      .cta-button {
+        display: block !important;
+        text-align: center !important;
+        padding: 16px 10px !important;
+      }
+      .offer-details-cell {
+        display: block !important;
+        width: 100% !important;
+        text-align: center !important;
+      }
+      .offer-details-table td {
+        padding: 8px !important;
+      }
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f5f5f5; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
+  <!-- Gmail/Outlook fix: Ensure proper rendering -->
+  <div style="display:none; font-size:1px; color:#ffffff; line-height:1px; max-height:0px; max-width:0px; opacity:0; overflow:hidden;">
+    Great news! Your Nexli Funding offer is approved and ready for your review...
+  </div>
+  
+  <center>
+    <!-- Main Table Container -->
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f5f5f5;">
+      <tr>
+        <td align="center" style="padding: 20px 0;">
+          <!-- Email Content Container -->
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" class="full-width" style="width: 600px; background-color: #ffffff; margin: 0 auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <!-- Header -->
+            <tr>
+              <td style="background-color: #2B6B6B; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+                <table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="background-color: #c1ff72; width: 60px; height: 60px; border-radius: 50%; text-align: center; vertical-align: middle;">
+                      <span style="font-size: 32px; font-weight: bold; color: #2B6B6B;">$</span>
+                    </td>
+                    <td width="15"></td>
+                    <td style="font-size: 32px; font-weight: bold; text-align: left;">
+                      <span style="color: #ffffff;">Nexli</span> <span style="color: #c1ff72;">Funding</span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Status -->
+            <tr>
+              <td style="padding: 30px 20px;" class="responsive-padding">
+                <!-- Celebration Banner -->
+                <table width="100%" style="background-color: #d1e7dd; border-radius: 8px; margin-bottom: 25px;" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding: 20px; text-align: center;">
+                      <div style="font-size: 22px; font-weight: bold; color: #0f5132; margin-bottom: 5px;">🎉 You're Approved! 🎉</div>
+                      <div style="color: #0f5132; font-size: 16px;">Your funding offer is ready to review</div>
+                    </td>
+                  </tr>
+                </table>
+
+                <h1 style="color: #2B6B6B; font-size: 30px; margin-bottom: 25px;">Your Business Funding Offer</h1>
+                <p>Hi {{contact.first_name}},</p>
+                <p>Congratulations! We're pleased to inform you that our lending partners have approved your business for funding.</p>
+                
+                <p>Here's the funding offer that's been prepared for you:</p>
+                
+                <!-- Offer Details Box -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f8f9fa; border-radius: 8px; margin-bottom: 25px; border: 2px solid #CDF86C;">
+                  <tr>
+                    <td style="padding: 20px;">
+                      <h2 style="text-align: center; margin-top: 0; margin-bottom: 20px; color: #2B6B6B;">Your Approved Offer</h2>
+                      
+                      <table width="100%" class="offer-details-table" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td class="offer-details-cell" style="padding: 10px; border-bottom: 1px solid #e1e1e1; width: 50%;">
+                            <div style="font-weight: bold; font-size: 14px; color: #666;">Funding Amount</div>
+                            <div style="font-size: 24px; font-weight: bold; color: #2B6B6B;">{{funding_amount}}</div>
+                          </td>
+                          <td class="offer-details-cell" style="padding: 10px; border-bottom: 1px solid #e1e1e1; width: 50%;">
+                            <div style="font-weight: bold; font-size: 14px; color: #666;">Total Repayment</div>
+                            <div style="font-size: 24px; font-weight: bold; color: #2B6B6B;">{{total_repayment}}</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="offer-details-cell" style="padding: 10px; border-bottom: 1px solid #e1e1e1;">
+                            <div style="font-weight: bold; font-size: 14px; color: #666;">Term Length</div>
+                            <div style="font-size: 18px; font-weight: bold; color: #2B6B6B;">{{term_length}}</div>
+                          </td>
+                          <td class="offer-details-cell" style="padding: 10px; border-bottom: 1px solid #e1e1e1;">
+                            <div style="font-weight: bold; font-size: 14px; color: #666;">Payment Frequency</div>
+                            <div style="font-size: 18px; font-weight: bold; color: #2B6B6B;">{{payment_frequency}}</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="offer-details-cell" style="padding: 10px;">
+                            <div style="font-weight: bold; font-size: 14px; color: #666;">Payment Amount</div>
+                            <div style="font-size: 18px; font-weight: bold; color: #2B6B6B;">{{payment_amount}}</div>
+                          </td>
+                          <td class="offer-details-cell" style="padding: 10px;">
+                            <div style="font-weight: bold; font-size: 14px; color: #666;">Funding Speed</div>
+                            <div style="font-size: 18px; font-weight: bold; color: #2B6B6B;">As fast as 24 hours</div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <p>To review the full details and accept this offer, please schedule a quick call with your funding specialist using the button below:</p>
+
+                <!-- CTA -->
+                <table role="presentation" align="center" style="margin: 20px auto 30px auto;" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="background-color: #CDF86C; border-radius: 50px;">
+                      <a href="{{calendly_link}}" 
+                         class="cta-button"
+                         style="display: inline-block; padding: 16px 32px; text-decoration: none; color: #333; font-weight: 600; font-size: 18px;">
+                        Schedule Offer Review Call
+                      </a>
+                    </td>
+                  </tr>
+                </table>
+
+                <p>During this call, we'll:</p>
+                <ul style="margin-top: 0; padding-left: 25px;">
+                  <li>Walk through all terms and conditions</li>
+                  <li>Answer any questions you have</li>
+                  <li>Process your acceptance if you're ready to move forward</li>
+                  <li>Get your business funded as quickly as possible</li>
+                </ul>
+
+                <p>This offer is valid for 7 days, so we recommend scheduling your call as soon as possible to secure this funding opportunity.</p>
+
+                <!-- Contact Info -->
+                <table width="100%" style="background-color: #E8F0F0; border-radius: 8px; margin-top: 20px;" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding: 20px; text-align: center;">
+                      <p style="margin-bottom: 0;">Questions? Call your funding specialist directly at <a href="tel:8884331523" style="color: #2B6B6B; font-weight: 600;">(888) 433-1523</a>.</p>
+                    </td>
+                  </tr>
+                </table>
+
+                <p style="margin-top: 30px; font-weight: 600; color: #2B6B6B;">{{user.first_name}}</p>
+                <p style="color: #666;">Nexli Funding Team</p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 12px; color: #666; border-radius: 0 0 8px 8px;">
+                © 2025 Nexli Funding. All rights reserved.<br>
+                <a href="https://www.nexlifunding.com/privacy" style="color: #2B6B6B;">Privacy Policy</a> | 
+                <a href="https://www.nexlifunding.com/terms" style="color: #2B6B6B;">Terms of Service</a><br><br>
+                <span style="font-size: 11px;">This offer is subject to final approval and verification of information.</span><br>
+                <span style="font-size: 11px;">3751 N Park Rd, Hollywood, Florida 33021</span>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </center>
+</body>
+</html> 

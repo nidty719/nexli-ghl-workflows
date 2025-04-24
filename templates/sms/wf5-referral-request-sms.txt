@@ -1,0 +1,1 @@
+Hi {{contact.first_name}}, know any business owners who need funding? Earn $100 for each referral who gets funded! Share your link: {{referral_link}} or reply with their info. No limit to how much you can earn! -Noah, Nexli Funding 
