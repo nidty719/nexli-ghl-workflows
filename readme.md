@@ -1,6 +1,6 @@
 Nexli Funding – Workflow & Tag Playbook
 
-(Last updated 24 Apr 2025)
+(Last updated 25 Apr 2025)
 
 This document is the single source of truth for every automation that moves a prospect from Facebook lead-ad to Funded deal, plus follow-up review and long-term nurture.
 It explains:
@@ -8,7 +8,7 @@ It explains:
 | Section | What you'll find |
 |---------|-----------------|
 | 1. Tag Dictionary | What each tag means and who/what applies it |
-| 2. Workflow Summaries | Trigger → goal → key steps for all six workflows |
+| 2. Workflow Summaries | Trigger → goal → key steps for all seven workflows |
 | 3. Global "Hot-Lead Sniffer" Trigger | How re-engaged prospects leap out of nurture |
 | 4. Mermaid Flowchart | Visual map of the entire journey (renders in any Mermaid viewer) |
 | 5. SLA & Reporting Notes | Quick reference for Ops & Management |
@@ -21,6 +21,7 @@ It explains:
 | Tag | Added by | Purpose / Effect |
 |-----|----------|------------------|
 | new-lead | FB Lead-Ad → Zap | Starts WF-1 Fast-Five |
+| form-unqualified | FB Lead-Ad Form Validation → Zap | Bypasses Fast-Five, sends to WF-7 Auto-Disqualify |
 | call-answered | Closer (call disposition) | Branch logic only |
 | call-noanswer | Closer | Triggers follow-up loop inside WF-1 |
 | call-back | Closer | Creates future dial task; exits WF-1 |
@@ -50,6 +51,7 @@ It explains:
 | WF-4 | Offer Review<br/>Show terms; client decision | offer-out | Email+SMS terms + Calendly → event-wait for accept | funded or offer-declined |
 | WF-5 | Review & Referral<br/>Social proof + upsell | funded | Day 1 review ask; Day 3 referral ask | End after sequence |
 | WF-6 | Long-Term Nurture<br/>Recycle non-funded leads | unresponsive-docs, cold-lead, lender-decline, offer-declined | 14-day ed emails + 30-day SMS check-in loop | Tag re-engaged (auto) returns them to pipeline |
+| WF-7 | Auto-Disqualify<br/>Handle form-unqualified leads | form-unqualified | Special intro email explaining qualification requirements | Sends to WF-6 Nurture |
 
 
 ⸻
@@ -77,10 +79,21 @@ ELSE
 4 Mermaid Flowchart
 
 ```mermaid
-graph
+
+graph TD;
+    %% ---------- LEAD ENTRY POINT ----------
+    Z1([FB Lead-Ad Form])
+    Z1 -->|Qualified| A1([Tag: new-lead])
+    Z1 -->|Unqualified| A0([Tag: form-unqualified])
+    
+    %% ---------- WF-7 AUTO-DISQUALIFY ----------
+    subgraph AutoDisqualify["WF-7 Auto-Disqualify"]
+        A0 --> A0a[Disqualification Email]
+        A0a --> A0b([Send to Nurture])
+    end
+    
     %% ---------- WF-1 FAST-FIVE ----------
     subgraph FastFive["WF-1 Fast-Five"]
-        A1([FB Lead-Ad<br/>Tag: new-lead])
         A1 --> A2[Email + SMS #1]
         A2 --> A3{{Fast-Five Call}}
         A3 -->|Answered & Qualified| A5([Tag: docs-requested])
@@ -129,7 +142,9 @@ graph
 
     %% ---------- WF-6 LONG-TERM NURTURE ----------
     subgraph Nurture["WF-6 Long-Term Nurture"]
-        A9 --> N1([Tag: nurture-long])
+        A0b --> N1([Tag: nurture-long])
+        A6 --> N1
+        A9 --> N1
         B5 --> N1
         C5 --> N1
         D4 --> N1
@@ -139,6 +154,7 @@ graph
         N4 -->|Yes| A5
         N4 -->|No| N2
     end
+
 ```
 
 ⸻

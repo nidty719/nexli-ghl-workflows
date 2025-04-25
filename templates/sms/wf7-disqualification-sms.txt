@@ -1,0 +1,1 @@
+Hi {{contact.first_name}}, we're unable to prequalify you for funding, but we have options. 65% of our borrowers use a cosigner to get business credit cards with 0% APR. Find a cosigner or start credit repair (or both). Full details in your email. Call us at (888) 433-1523 to discuss. -Noah, Nexli Funding 
