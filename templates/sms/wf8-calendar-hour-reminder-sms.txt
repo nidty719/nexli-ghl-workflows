@@ -1,0 +1,1 @@
+REMINDER: Hi {{contact.first_name}}, your call with Nexli Funding starts in 1 hour. {{#if appointment.meeting_location}}Join via this link: {{appointment.meeting_location}}{{else}}We'll call you at your registered number.{{/if}} We're looking forward to speaking with you! -{{appointment.user.name}}, Nexli Funding 

@@ -1,0 +1,1 @@
+Hi {{contact.first_name}}, we've reviewed your funding application and unfortunately our lenders couldn't extend an offer at this time. However, we have alternative options! 65% of our clients use cosigners to qualify for business credit. Check your email for details or call (888) 433-1523 to discuss. -Noah, Nexli Funding 

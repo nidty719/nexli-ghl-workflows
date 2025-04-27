@@ -1,0 +1,1 @@
+REMINDER: Hi {{contact.first_name}}, your call with Nexli Funding is tomorrow at {{appointment.only_start_time}}. Please have your monthly revenue figures and funding needs ready. Need to reschedule? Use this link: {{appointment.reschedule_link}} We look forward to speaking with you! -{{appointment.user.name}}, Nexli Funding 

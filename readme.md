@@ -12,6 +12,8 @@ It explains:
 | 3. Global "Hot-Lead Sniffer" Trigger | How re-engaged prospects leap out of nurture |
 | 4. Mermaid Flowchart | Visual map of the entire journey (renders in any Mermaid viewer) |
 | 5. SLA & Reporting Notes | Quick reference for Ops & Management |
+| 6. Calendar Appointment Workflow | Confirmation and reminder sequence for all calendar bookings |
+| 7. TODO List | Outstanding action items and implementation tasks |
 
 
 ⸻
@@ -37,6 +39,7 @@ It explains:
 | cold-lead | WF-1 auto after 3 failed calls | Sends to WF-6 Nurture |
 | nurture-long | Auto tag inside WF-6 | Indicates contact is in long-term drip |
 | re-engaged | Global trigger (reply, click, booking) or rep tag | Pulls contact out of WF-6 and back into pipeline |
+| customer-booked-appointment | Calendar (QB8uLe2eg2L0jJwAk8Hq) | Triggers WF-8 Calendar Confirmation flow |
 
 
 ⸻
@@ -52,6 +55,7 @@ It explains:
 | WF-5 | Review & Referral<br/>Social proof + upsell | funded | Day 1 review ask; Day 3 referral ask | End after sequence |
 | WF-6 | Long-Term Nurture<br/>Recycle non-funded leads | unresponsive-docs, cold-lead, lender-decline, offer-declined | 14-day ed emails + 30-day SMS check-in loop | Tag re-engaged (auto) returns them to pipeline |
 | WF-7 | Auto-Disqualify<br/>Handle form-unqualified leads | form-unqualified | Special intro email explaining qualification requirements | Sends to WF-6 Nurture |
+| WF-8 | Calendar Confirmations<br/>Manage appointment reminders | customer-booked-appointment | Immediate confirmation + 1-day and 1-hour reminders | No exit - standalone flow |
 
 
 ⸻
@@ -79,7 +83,6 @@ ELSE
 4 Mermaid Flowchart
 
 ```mermaid
-
 graph TD;
     %% ---------- LEAD ENTRY POINT ----------
     Z1([FB Lead-Ad Form])
@@ -154,6 +157,16 @@ graph TD;
         N4 -->|Yes| A5
         N4 -->|No| N2
     end
+    
+    %% ---------- WF-8 CALENDAR CONFIRMATION FLOW ----------
+    subgraph CalendarFlow["WF-8 Calendar Confirmation"]
+        CAL1([Calendar Booking<br/>Tag: customer-booked-appointment])
+        CAL1 --> CAL2[Immediate Confirmation<br/>Email + SMS]
+        CAL2 --> CAL3(Wait for 24h before appointment)
+        CAL3 --> CAL4[1-Day Reminder<br/>Email + SMS]
+        CAL4 --> CAL5(Wait until 1h before appointment)
+        CAL5 --> CAL6[1-Hour Reminder<br/>SMS Only]
+    end
 
 ```
 
@@ -170,6 +183,33 @@ graph TD;
   - Build in Looker Studio pulling GHL pipeline + ad spend sheet.
 - Monthly QA
   - Randomly audit 5 funded files: must contain disclosure PDF, signed broker fee page, correct bank statements.
+
+⸻
+
+6 Calendar Appointment Workflow
+
+This workflow triggers automatically when any prospect books a call using any of our calendar links. GoHighLevel Calendar ID: QB8uLe2eg2L0jJwAk8Hq
+
+| Timing | Communication | Content |
+|--------|---------------|---------|
+| Immediate | Confirmation Email + SMS | Thank you for booking, appointment details, add to calendar link |
+| 24h before | Reminder Email + SMS | Reminder of upcoming call, what to expect, any preparation needed |
+| 1h before | SMS Only | Quick reminder that call is starting soon |
+
+⸻
+
+7 TODO List
+
+- [ ] Review all emails for correct calendar links and automations
+- [ ] Set up business review profiles and monitoring:
+  - [ ] Google Business Profile
+  - [ ] Yelp
+  - [ ] Trustpilot
+- [ ] Create SOP documentation for lender offer handling process
+- [ ] Verify all email templates are mobile responsive
+- [ ] Test calendar booking flow with confirmation and reminder sequences
+- [ ] Set up automated reports for workflow KPIs
+- [ ] Create training documentation for new sales team members
 
 ⸻
 
