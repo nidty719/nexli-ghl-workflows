@@ -2,7 +2,7 @@ Nexli Funding – Workflow & Tag Playbook
 
 (Last updated 25 Apr 2025)
 
-This document is the single source of truth for every automation that moves a prospect from Facebook lead-ad to Funded deal, plus follow-up review and long-term nurture.
+This document is the single source of truth for every automation that moves a prospect from website application to Funded deal, plus follow-up review and long-term nurture.
 It explains:
 
 | Section | What you'll find |
@@ -22,8 +22,12 @@ It explains:
 
 | Tag | Added by | Purpose / Effect |
 |-----|----------|------------------|
-| new-lead | FB Lead-Ad → Zap | Starts WF-1 Fast-Five |
-| form-unqualified | FB Lead-Ad Form Validation → Zap | Bypasses Fast-Five, sends to WF-7 Auto-Disqualify |
+| form-qualified | Website AI Pre-Qualification → Webhook | Indicates prospect passed initial AI qualification |
+| form-unqualified | Website AI Pre-Qualification → Webhook | Bypasses Fast-Five, sends to WF-7 Auto-Disqualify or Credit Repair |
+| offerId-tracking | Website → Webhook | Unique identifier for tracking throughout application process |
+| credit-stacking | User Selection → Webhook | Routes to MyScoreIQ for credit report |
+| revenue-loan | User Selection → Webhook | Routes to document collection for business loans |
+| mca-loan | User Selection → Webhook | Routes to document collection for merchant cash advance |
 | call-answered | Closer (call disposition) | Branch logic only |
 | call-noanswer | Closer | Triggers follow-up loop inside WF-1 |
 | call-back | Closer | Creates future dial task; exits WF-1 |
@@ -48,13 +52,13 @@ It explains:
 
 | # | Name & Goal | Trigger | Key Actions | Exit / Next Tag |
 |---|------------|---------|------------|----------------|
-| WF-1 | Fast-Five<br/>Live verify & qualify in ≤5 min | new-lead | ① Email+SMS welcome<br/>② Power-dial call<br/>③ If qualified → add docs-requested | docs-requested or disqualify / cold-lead |
+| WF-1 | Application Process<br/>Guide through document submission | form-qualified | ① Website applies AI qualification<br/>② User selects loan type<br/>③ Based on selection, routes to appropriate doc collection | docs-in or form-unqualified |
 | WF-2 | Docs Chase<br/>Secure uploads within 72 h | docs-requested | Portal link → event-wait for docs-in with 2 reminder loops | docs-in or unresponsive-docs |
 | WF-3 | Submit to Lender<br/>Package & send file | docs-in | Internal prep task → Ops adds submitted → await lender → tag offer-out or lender-decline | offer-out / lender-decline |
 | WF-4 | Offer Review<br/>Show terms; client decision | offer-out | Email+SMS terms + Calendly → event-wait for accept | funded or offer-declined |
 | WF-5 | Review & Referral<br/>Social proof + upsell | funded | Day 1 review ask; Day 3 referral ask | End after sequence |
 | WF-6 | Long-Term Nurture<br/>Recycle non-funded leads | unresponsive-docs, cold-lead, lender-decline, offer-declined | 14-day ed emails + 30-day SMS check-in loop | Tag re-engaged (auto) returns them to pipeline |
-| WF-7 | Auto-Disqualify<br/>Handle form-unqualified leads | form-unqualified | Special intro email explaining qualification requirements | Sends to WF-6 Nurture |
+| WF-7 | Credit Repair<br/>Handle form-unqualified leads | form-unqualified | Special intro email explaining credit repair options | Sends to WF-6 Nurture |
 | WF-8 | Calendar Confirmations<br/>Manage appointment reminders | customer-booked-appointment | Immediate confirmation + 1-day and 1-hour reminders | No exit - standalone flow |
 
 
@@ -85,41 +89,32 @@ ELSE
 ```mermaid
 graph TD;
     %% ---------- LEAD ENTRY POINT ----------
-    Z1([FB Lead-Ad Form])
-    Z1 -->|Qualified| A1([Tag: new-lead])
-    Z1 -->|Unqualified| A0([Tag: form-unqualified])
+    Z1([Website Application])
+    Z1 -->|AI Qualification| A1([Tag: form-qualified])
+    Z1 -->|AI Decline| A0([Tag: form-unqualified])
     
-    %% ---------- WF-7 AUTO-DISQUALIFY ----------
-    subgraph AutoDisqualify["WF-7 Auto-Disqualify"]
-        A0 --> A0a[Disqualification Email]
+    %% ---------- LOAN TYPE SELECTION ----------
+    A1 --> LT{Loan Type Selection}
+    LT -->|Credit Stacking| CS[Tag: credit-stacking]
+    LT -->|Revenue Loan| RL[Tag: revenue-loan]
+    LT -->|MCA| MCA[Tag: mca-loan]
+    
+    CS --> CSP[Direct to MyScoreIQ<br/>3-Bureau Report]
+    RL --> DOC[Document Collection<br/>Business Details & Statements]
+    MCA --> DOC
+    CSP --> DOC2[Upload Credit Report]
+    DOC --> DI([Tag: docs-in])
+    DOC2 --> DI
+    
+    %% ---------- WF-7 CREDIT REPAIR ----------
+    subgraph CreditRepair["WF-7 Credit Repair"]
+        A0 --> A0a[Credit Repair Options Email]
         A0a --> A0b([Send to Nurture])
     end
     
-    %% ---------- WF-1 FAST-FIVE ----------
-    subgraph FastFive["WF-1 Fast-Five"]
-        A1 --> A2[Email + SMS #1]
-        A2 --> A3{{Fast-Five Call}}
-        A3 -->|Answered & Qualified| A5([Tag: docs-requested])
-        A3 -->|Answered - Not Fit| A6([Tag: disqualified])
-        A3 -->|Call Later| A7([Tag: call-back])
-        A3 -->|No Answer| A9[Reminders → Tag cold-lead]
-    end
-
-    %% ---------- WF-2 DOCS CHASE ----------
-    subgraph DocsChase["WF-2 Docs Chase"]
-        A5 --> B1[Portal Link Email + SMS]
-        B1 --> B2{{Docs-in tag?<br/>24 h wait}}
-        B2 -->|Yes| B8([Tag: docs-in])
-        B2 -->|No| R1[Reminder 1] --> W1(Wait 24 h) --> B3{{Docs-in tag?}}
-        B3 -->|Yes| B8
-        B3 -->|No| R2[Reminder 2 + Dialer] --> W2(Wait 24 h) --> B4{{Docs-in tag?}}
-        B4 -->|Yes| B8
-        B4 -->|No| B5([Tag: unresponsive-docs])
-    end
-
     %% ---------- WF-3 SUBMIT TO LENDER ----------
     subgraph Submit["WF-3 Submit to Lender"]
-        B8 --> C1[Internal Task: Package File]
+        DI --> C1[Internal Task: Package File]
         C1 --> C2([Tag: submitted])
         C2 --> C3{{Lender Offer?}}
         C3 -->|Offer| C4([Tag: offer-out])
@@ -146,15 +141,12 @@ graph TD;
     %% ---------- WF-6 LONG-TERM NURTURE ----------
     subgraph Nurture["WF-6 Long-Term Nurture"]
         A0b --> N1([Tag: nurture-long])
-        A6 --> N1
-        A9 --> N1
-        B5 --> N1
         C5 --> N1
         D4 --> N1
         N1 --> N2(Email every 14 d)
         N2 --> N3(SMS every 30 d)
         N3 --> N4{{Re-engaged tag?}}
-        N4 -->|Yes| A5
+        N4 -->|Yes| A1
         N4 -->|No| N2
     end
     

@@ -1,1 +1,1 @@
-Hi {{contact.first_name}}, thanks for applying with Nexli Funding! We'll be calling you in the next few minutes to discuss your business funding options. In the meantime, please check your email for more details. -Noah, Nexli Funding 
+Hi {{contact.first_name}}, great news! You're pre-qualified for business funding. Please check your email and click CONTINUE APPLICATION to select your funding option and complete your submission. -Nexli Funding Team 
