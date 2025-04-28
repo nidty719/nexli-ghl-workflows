@@ -52,7 +52,7 @@ It explains:
 
 | # | Name & Goal | Trigger | Key Actions | Exit / Next Tag |
 |---|------------|---------|------------|----------------|
-| WF-1 | Application Process<br/>Guide through document submission | form-qualified | ① Website applies AI qualification<br/>② User selects loan type<br/>③ Based on selection, routes to appropriate doc collection | docs-in or form-unqualified |
+| WF-1 | Tag for Docs Chase<br/>Initiate document request | form-qualified | ① Website applies AI qualification<br/>② Apply docs-requested tag | docs-requested |
 | WF-2 | Docs Chase<br/>Secure uploads within 72 h | docs-requested | Portal link → event-wait for docs-in with 2 reminder loops | docs-in or unresponsive-docs |
 | WF-3 | Submit to Lender<br/>Package & send file | docs-in | Internal prep task → Ops adds submitted → await lender → tag offer-out or lender-decline | offer-out / lender-decline |
 | WF-4 | Offer Review<br/>Show terms; client decision | offer-out | Email+SMS terms + Calendly → event-wait for accept | funded or offer-declined |
