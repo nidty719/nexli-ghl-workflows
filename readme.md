@@ -93,18 +93,8 @@ graph TD;
     Z1 -->|AI Qualification| A1([Tag: form-qualified])
     Z1 -->|AI Decline| A0([Tag: form-unqualified])
     
-    %% ---------- LOAN TYPE SELECTION ----------
-    A1 --> LT{Loan Type Selection}
-    LT -->|Credit Stacking| CS[Tag: credit-stacking]
-    LT -->|Revenue Loan| RL[Tag: revenue-loan]
-    LT -->|MCA| MCA[Tag: mca-loan]
-    
-    CS --> CSP[Direct to MyScoreIQ<br/>3-Bureau Report]
-    RL --> DOC[Document Collection<br/>Business Details & Statements]
-    MCA --> DOC
-    CSP --> DOC2[Upload Credit Report]
-    DOC --> DI([Tag: docs-in])
-    DOC2 --> DI
+    %% ---------- LOAN TYPE SELECTION / INITIAL STEPS ----------
+    A1 --> A5([Tag: docs-requested])
     
     %% ---------- WF-7 CREDIT REPAIR ----------
     subgraph CreditRepair["WF-7 Credit Repair"]
@@ -112,9 +102,21 @@ graph TD;
         A0a --> A0b([Send to Nurture])
     end
     
+    %% ---------- WF-2 DOCS CHASE ----------
+    subgraph DocsChase["WF-2 Docs Chase"]
+        A5 --> B1[Portal Link Email + SMS]
+        B1 --> B2{{Docs-in tag?<br/>24 h wait}}
+        B2 -->|Yes| B8([Tag: docs-in])
+        B2 -->|No| R1[Reminder 1] --> W1(Wait 24 h) --> B3{{Docs-in tag?}}
+        B3 -->|Yes| B8
+        B3 -->|No| R2[Reminder 2 + Dialer] --> W2(Wait 24 h) --> B4{{Docs-in tag?}}
+        B4 -->|Yes| B8
+        B4 -->|No| B5([Tag: unresponsive-docs])
+    end
+
     %% ---------- WF-3 SUBMIT TO LENDER ----------
     subgraph Submit["WF-3 Submit to Lender"]
-        DI --> C1[Internal Task: Package File]
+        B8 --> C1[Internal Task: Package File]
         C1 --> C2([Tag: submitted])
         C2 --> C3{{Lender Offer?}}
         C3 -->|Offer| C4([Tag: offer-out])
@@ -141,12 +143,13 @@ graph TD;
     %% ---------- WF-6 LONG-TERM NURTURE ----------
     subgraph Nurture["WF-6 Long-Term Nurture"]
         A0b --> N1([Tag: nurture-long])
+        B5 --> N1
         C5 --> N1
         D4 --> N1
         N1 --> N2(Email every 14 d)
         N2 --> N3(SMS every 30 d)
         N3 --> N4{{Re-engaged tag?}}
-        N4 -->|Yes| A1
+        N4 -->|Yes| A5
         N4 -->|No| N2
     end
     
