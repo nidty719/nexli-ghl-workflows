@@ -10,13 +10,14 @@ It explains:
 | 1. Tag Dictionary | What each tag means and who/what applies it |
 | 2. Workflow Summaries | Trigger → goal → key steps for all seven workflows |
 | 3. Global "Hot-Lead Sniffer" Trigger | How re-engaged prospects leap out of nurture |
-| 4. High-Level Pipeline Overview | Broad overview of the main sales pipeline stages and workflow touchpoints |
-| 5. Detailed Mermaid Flowchart | Visual map of the entire journey (renders in any Mermaid viewer) |
-| 6. GoHighLevel Automation Implementation Guide | How to build these automations in GoHighLevel |
-| 7. SLA & Reporting Notes | Quick reference for Ops & Management |
-| 8. Calendar Appointment Workflow | Confirmation and reminder sequence for all calendar bookings |
-| 9. TODO List | Outstanding action items and implementation tasks |
-| 10. AI Caller Workflows | Automated AI Caller system and its integration with GoHighLevel (GHL) |
+| 4. Sales Pipeline Stages & Definitions (Sales View) | Mapping GHL pipeline stages to tags and sales actions |
+| 5. High-Level Pipeline Overview | Broad overview of the main sales pipeline stages and workflow touchpoints |
+| 6. Detailed Mermaid Flowchart | Visual map of the entire journey (renders in any Mermaid viewer) |
+| 7. GoHighLevel Automation Implementation Guide | How to build these automations in GoHighLevel |
+| 8. SLA & Reporting Notes | Quick reference for Ops & Management |
+| 9. Calendar Appointment Workflow | Confirmation and reminder sequence for all calendar bookings |
+| 10. TODO List | Outstanding action items and implementation tasks |
+| 11. AI Caller Workflows | Automated AI Caller system and its integration with GoHighLevel (GHL) |
 
 
 ⸻
@@ -35,9 +36,13 @@ It explains:
 | call-noanswer | Closer | Triggers follow-up loop inside WF-1 |
 | call-back | Closer | Creates future dial task; exits WF-1 |
 | disqualified | Closer | Ends contact—no further workflows |
-| docs-requested | Closer (one-click tag) | Starts WF-2 Docs Chase |
-| docs-in | Portal webhook or Ops | Starts WF-3 Submit to Lender |
-| submitted | Ops when file sent | Kicks off SLA timer; prerequisite for lender offer |
+| docs-requested | Closer (one-click tag) OR WF-3 (if additional docs needed post-review) | Starts WF-2 Docs Chase. Can be re-applied if initial doc review requests more items. |
+| docs-in | Portal webhook or Ops | Indicates all initially requested docs are uploaded by prospect; Triggers WF-3 Document Review. |
+| docs-under-review | WF-3 (auto) | Docs received and are now with Ops for initial review. |
+| docs-review-passed | Ops (manual) | Docs reviewed and deemed complete and correct for the current funding route. Allows WF-3 to proceed to lender submission. |
+| additional-docs-needed | Ops (manual) | Doc review found more items are needed for the current funding route. Triggers re-application of 'docs-requested' and re-starts WF-2. |
+| funding-route-change-advised | Ops (manual) | Doc review suggests a different funding product/route is more appropriate. Triggers alert to Sales for re-consult. |
+| submitted | Ops (manual, post-review) | File packaged and sent to lender, after passing document review. Kicks off SLA timer; prerequisite for lender offer. |
 | lender-decline | Ops | Drops into WF-6 Nurture |
 | offer-out | Ops when terms arrive | Starts WF-4 Offer Review |
 | offer-declined | Prospect says "no" | Sends to WF-6 Nurture |
@@ -56,8 +61,8 @@ It explains:
 | # | Name & Goal | Trigger | Key Actions | Exit / Next Tag |
 |---|------------|---------|------------|----------------|
 | WF-1 | Tag for Docs Chase<br/>Initiate document request | form-qualified | ① Website applies AI qualification<br/>② Apply docs-requested tag | docs-requested |
-| WF-2 | Docs Chase<br/>Secure uploads within 72 h | docs-requested | Portal link → event-wait for docs-in with 2 reminder loops | docs-in or unresponsive-docs |
-| WF-3 | Submit to Lender<br/>Package & send file | docs-in | Internal prep task → Ops adds submitted → await lender → tag offer-out or lender-decline | offer-out / lender-decline |
+| WF-2 | Docs Chase<br/>Secure uploads within 72 h | docs-requested | Portal link → event-wait for docs-in with 2 reminder loops. If 'additional-docs-needed' was applied, this workflow re-engages. | docs-in or unresponsive-docs |
+| WF-3 | Document Review & Lender Submission<br/>Review docs, prepare for lender, or request revisions. | docs-in | ① Apply `docs-under-review` tag.<br/>② Move to "Document Review" GHL pipeline stage.<br/>③ Notify Ops: "Docs for [Contact] ready for review."<br/>④ PAUSE - Await Ops manual tag:<br/>   IF `docs-review-passed` (by Ops): Remove `docs-under-review`. Ops packages file & adds `submitted` tag. Await `offer-out` or `lender-decline`.<br/>   IF `additional-docs-needed` (by Ops): Remove `docs-under-review`, `additional-docs-needed`. Add `docs-requested` (re-triggers WF-2).<br/>   IF `funding-route-change-advised` (by Ops): Remove `docs-under-review`, `funding-route-change-advised`. Move to "Needs Re-Consult" stage. Notify Sales Rep. | `offer-out` / `lender-decline` (Path A)<br/>`docs-requested` (Path B)<br/>(Manual Follow-up Path C) |
 | WF-4 | Offer Review<br/>Show terms; client decision | offer-out | Email+SMS terms + Calendly → event-wait for accept | funded or offer-declined |
 | WF-5 | Review & Referral<br/>Social proof + upsell | funded | Day 1 review ask; Day 3 referral ask | End after sequence |
 | WF-6 | Long-Term Nurture<br/>Recycle non-funded leads | unresponsive-docs, cold-lead, lender-decline, offer-declined | 14-day ed emails + 30-day SMS check-in loop | Tag re-engaged (auto) returns them to pipeline |
@@ -87,7 +92,29 @@ ELSE
 
 ⸻
 
-4 High-Level Pipeline Overview
+4 Sales Pipeline Stages & Definitions (Sales View)
+
+This table outlines the main GHL pipeline stages, the key tag associated with each, and what it means for the sales team when a lead is in that stage. This helps understand where the lead is and what actions are generally expected or automated.
+
+| GHL Pipeline Stage         | Key Identifying Tag(s)            | What it Means for Sales / Next Steps                                                                 |
+|----------------------------|-----------------------------------|------------------------------------------------------------------------------------------------------|
+| **New Lead / Qualified**   | `form-qualified`                  | New lead passed initial AI qualification. WF-1 is auto-applying `docs-requested`. Await document portal setup. |
+| **Docs Requested**         | `docs-requested`                  | Automation (WF-2) has sent document request & portal link. Monitor for `docs-in`. Follow up if lead stalls. |
+| **Docs In**                | `docs-in`                         | Prospect has uploaded documents. WF-3 is auto-applying `docs-under-review`. Ops will be notified.       |
+| **Document Review**        | `docs-under-review`               | Ops is currently reviewing submitted documents. Await outcome: `docs-review-passed`, `additional-docs-needed`, or `funding-route-change-advised`. |
+| **Needs Re-Consult**       | `funding-route-change-advised`    | Ops review suggests a different funding route. Sales needs to reconnect with the lead to discuss new options/docs. |
+| **Ready for Submission**   | `docs-review-passed`, `submitted` | Docs approved by Ops & file packaged. Ops is submitting to lender(s). Await `offer-out` or `lender-decline`. |
+| **Offer Out**              | `offer-out`                       | Lender has provided terms. Automation (WF-4) is sending offer and scheduling link to client. Sales to follow up to discuss & close. |
+| **Funded**                 | `funded`                          | Deal is closed and funded! Automation (WF-5) handles review/referral requests. Sales can congratulate client. |
+| **Unqualified / Credit Repair** | `form-unqualified`             | Lead did not pass initial AI. WF-7 sends credit repair info. Typically moves to Nurture. Low priority for immediate sales follow-up unless re-engaged. |
+| **Nurture**                | `nurture-long`                    | Lead is in long-term follow-up (WF-6) due to being unresponsive, declined, etc. Monitor for `re-engaged` tag. |
+| **On Hold / Call Back**    | `call-back`                       | Sales has requested a specific call-back time. A task should be created. Lead is temporarily out of main active flow. |
+| **Disqualified**           | `disqualified`                    | Lead is not a fit, or has requested no further contact. No further action from sales or automation. |
+
+
+⸻
+
+5 High-Level Pipeline Overview
 
 This flowchart provides a high-level snapshot of the main sales pipeline stages, corresponding GoHighLevel workflows (WF), and how leads progress through the system, including nurture and re-engagement paths.
 
@@ -103,15 +130,19 @@ graph TD;
     subgraph "WF-2: Document Chase"
         DR --> WF2_Process[Collect Documents];
         WF2_Process --> WF2_Decision{Docs Received?};
-        WF2_Decision -- Yes --> DS(Pipeline Stage: Docs In / Ready to Submit);
+        WF2_Decision -- Yes --> DS(Pipeline Stage: Docs In);
         WF2_Decision -- No / Unresponsive --> ToNurture2(To Nurture);
     end
 
-    subgraph "WF-3: Submission to Lender"
-        DS --> WF3_Process[Package & Submit to Lender];
-        WF3_Process --> WF3_Decision{Lender Offer?};
-        WF3_Decision -- Yes --> HO(Pipeline Stage: Offer Out);
-        WF3_Decision -- No / Lender Decline --> ToNurture3(To Nurture);
+    subgraph "WF-3: Document Review & Submission"
+        DS -- "WF-3a: Initial Review Setup" --> DRV(Pipeline Stage: Document Review);
+        DRV --> WF3_ReviewDecision{Review Outcome?};
+        WF3_ReviewDecision -- "Docs Approved" --> DSUB(Pipeline Stage: Ready for Submission);
+        DSUB -- "WF-3b: Package & Submit" --> WF3_LenderDecision{Lender Offer?};
+        WF3_LenderDecision -- Yes --> HO(Pipeline Stage: Offer Out);
+        WF3_LenderDecision -- No / Lender Decline --> ToNurture3(To Nurture);
+        WF3_ReviewDecision -- "Additional Docs Needed" --> DR;
+        WF3_ReviewDecision -- "Route Change Advised" --> NRC(Pipeline Stage: Needs Re-Consult);
     end
 
     subgraph "WF-4: Offer Review (Client)"
@@ -144,16 +175,16 @@ graph TD;
     end
 
     classDef pipelineStage fill:#e6f2ff,stroke:#0052cc,stroke-width:2px,font-weight:bold;
-    class QS,UQ,DR,DS,HO,F pipelineStage
+    class QS,UQ,DR,DS,DRV,DSUB,HO,F,NRC pipelineStage
 
     classDef workflowBlock fill:#f0fff0,stroke:#228B22,stroke-width:1px;
-    class WF2_Process,WF3_Process,WF4_Process,WF5_Process,WF8_Process,N_Loop workflowBlock
+    class WF2_Process,WF3_LenderDecision,WF4_Process,WF5_Process,WF8_Process,N_Loop workflowBlock
     
     classDef nurtureNode fill:#fff0f5,stroke:#FF69B4,stroke-width:2px;
     class N,ToNurture1,ToNurture2,ToNurture3,ToNurture4 nurtureNode
 
     classDef decision fill:#FFFACD,stroke:#FFD700,stroke-width:1px;
-    class WF2_Decision,WF3_Decision,WF4_Decision,N_ReEngage decision
+    class WF2_Decision,WF3_ReviewDecision,WF4_Decision,N_ReEngage decision
 
     classDef entryPoint fill:#F5F5F5,stroke:#808080,stroke-width:2px;
     class A,CalendarBooking entryPoint
@@ -164,7 +195,7 @@ graph TD;
 
 ⸻
 
-5 Detailed Mermaid Flowchart
+6 Detailed Mermaid Flowchart
 
 ```mermaid
 graph TD;
@@ -194,13 +225,22 @@ graph TD;
         B4 -->|No| B5([Tag: unresponsive-docs])
     end
 
-    %% ---------- WF-3 SUBMIT TO LENDER ----------
-    subgraph Submit["WF-3 Submit to Lender"]
-        B8 --> C1[Internal Task: Package File]
-        C1 --> C2([Tag: submitted])
-        C2 --> C3{{Lender Offer?}}
+    %% ---------- WF-3 DOCUMENT REVIEW & SUBMIT TO LENDER ----------
+    subgraph WF3_DocReviewAndSubmit["WF-3 Document Review & Submit to Lender"]
+        B8 --> C0[Apply 'docs-under-review' tag<br/>Move to 'Document Review' Stage<br/>Notify Ops]
+        C0 --> C0_Wait{{Manual Ops Review:<br/>Apply 'docs-review-passed',<br/>'additional-docs-needed', or<br/>'funding-route-change-advised' tag}}
+        C0_Wait --"docs-review-passed"--> C0_Passed[Remove 'docs-under-review' tag]
+        C0_Passed --> C1[Internal Task: Package File for Lender]
+        C1 --> C2_OpsSubmit[Ops: Add 'submitted' tag<br/>Move to 'Ready for Submission' Stage]
+        C2_OpsSubmit --> C3{{Lender Offer?}}
         C3 -->|Offer| C4([Tag: offer-out])
         C3 -->|Decline| C5([Tag: lender-decline])
+        
+        C0_Wait --"additional-docs-needed"--> C0_NeedMore[Remove 'docs-under-review', 'additional-docs-needed' tags]
+        C0_NeedMore --> A5_ReapplyDocsRequested([Re-apply 'docs-requested' tag])
+        A5_ReapplyDocsRequested -.-> A5
+        
+        C0_Wait --"funding-route-change-advised"--> C0_ReConsult[Remove 'docs-under-review', 'funding-route-change-advised' tags<br/>Notify Sales Rep<br/>Move to 'Needs Re-Consult' Stage]
     end
 
     %% ---------- WF-4 OFFER REVIEW ----------
@@ -247,9 +287,9 @@ graph TD;
 
 ⸻
 
-6 GoHighLevel Automation Implementation Guide
+7 GoHighLevel Automation Implementation Guide
 
-This section provides a general framework and considerations for building out the Nexli Funding pipeline automations within GoHighLevel (GHL). Refer to the "Tag Dictionary" (Section 1), "Workflow Summaries" (Section 2), and the "Detailed Mermaid Flowchart" (Section 5) as the primary blueprints for your GHL Workflows.
+This section provides a general framework and considerations for building out the Nexli Funding pipeline automations within GoHighLevel (GHL). Refer to the "Tag Dictionary" (Section 1), "Workflow Summaries" (Section 2), and the "Detailed Mermaid Flowchart" (Section 6) as the primary blueprints for your GHL Workflows.
 
 **General Principles:**
 
@@ -257,7 +297,7 @@ This section provides a general framework and considerations for building out th
 *   **Tag-Driven Logic:** Tags are the primary drivers of this automation.
     *   Most GHL Workflows will be triggered by a specific tag being added (e.g., `docs-requested` triggers WF-2).
     *   Workflows will often conclude by adding a new tag to trigger the next Workflow or move the contact to a nurture sequence (e.g., WF-2 adds `docs-in` or `unresponsive-docs`).
-*   **GHL Pipeline Stages:** Align GHL Pipeline Stages with the key milestones in the flowcharts (e.g., "Qualified", "Docs Requested", "Docs In", "Offer Out", "Funded"). Automate moving contacts between these pipeline stages using your GHL Workflows, typically triggered by tag additions.
+*   **GHL Pipeline Stages:** Align GHL Pipeline Stages with the key milestones in the flowcharts (e.g., "Qualified", "Docs Requested", "Docs In", "Document Review", "Ready for Submission", "Offer Out", "Funded", "Needs Re-Consult"). Automate moving contacts between these pipeline stages using your GHL Workflows, typically triggered by tag additions.
 *   **Clear Naming Conventions:** Use consistent and descriptive names for your GHL Workflows, Triggers, Actions, and any custom fields or values. This will make troubleshooting and maintenance easier. (e.g., "Nexli WF-2: Docs Chase", Trigger: "Tag Added - docs-requested").
 
 **Workflow-Specific Implementation Notes (Examples):**
@@ -275,11 +315,30 @@ This section provides a general framework and considerations for building out th
         *   If still not, send Reminder 2 (+ Dialer task if applicable). Wait again.
         *   If still no `docs-in`, add `unresponsive-docs` tag and move to Nurture (WF-6).
     *   Action (if `docs-in`): Add `docs-in` tag. Move to "Docs In / Ready to Submit" pipeline stage.
-*   **WF-3 (Submit to Lender):**
+*   **WF-3 (Document Review & Lender Submission):**
     *   Trigger: Tag `docs-in` is added.
-    *   Action: Create internal task for Ops to package file.
-    *   (Manual step by Ops): Ops adds `submitted` tag once done.
-    *   Wait step for lender decision (could be a manual tag update by Ops: `offer-out` or `lender-decline`).
+    *   Action: Apply `docs-under-review` tag.
+    *   Action: Move contact to "Document Review" GHL pipeline stage.
+    *   Action: Notify relevant Ops team/user: "Documents for [Contact Name] are ready for review."
+    *   Action: Add a "Wait" step configured for "Webhook / Event - Contact Tag". This step effectively pauses the workflow until Ops manually adds one of the review outcome tags.
+        *   **Branch A (Docs OK for Submission):** Condition for this branch in the Wait step is `docs-review-passed` tag added.
+            *   Action: Remove `docs-under-review` tag.
+            *   Action: (Ops Manually) Ops packages the file.
+            *   Action: (Ops Manually) Ops adds `submitted` tag.
+            *   Action: Move contact to "Ready for Submission" GHL pipeline stage (can be part of the workflow when `submitted` tag is detected, or Ops does it manually when adding the tag).
+            *   (Workflow then waits for `offer-out` or `lender-decline` tag via another Wait step or separate workflow as previously defined for WF-4 trigger).
+        *   **Branch B (More Docs Needed):** Condition for this branch in the Wait step is `additional-docs-needed` tag added.
+            *   Action: Remove `docs-under-review` tag.
+            *   Action: Remove `additional-docs-needed` tag (its purpose was to trigger this branch).
+            *   Action: Add `docs-requested` tag (this will re-initiate WF-2: Docs Chase).
+            *   Action: Move contact back to "Docs Requested" GHL pipeline stage.
+            *   *(End of this workflow path for WF-3; WF-2 takes over)*
+        *   **Branch C (Different Funding Route Advised):** Condition for this branch in the Wait step is `funding-route-change-advised` tag added.
+            *   Action: Remove `docs-under-review` tag.
+            *   Action: Remove `funding-route-change-advised` tag (its purpose was to trigger this branch).
+            *   Action: Move contact to "Needs Re-Consult" GHL pipeline stage.
+            *   Action: Notify the primary Sales Rep: "[Contact Name] needs a funding route re-evaluation after document review."
+            *   *(End of this workflow path for WF-3; manual intervention or a separate re-consult workflow takes over)*
 *   **WF-6 (Long-Term Nurture):**
     *   Trigger: Tags `unresponsive-docs`, `cold-lead`, `lender-decline`, or `offer-declined` are added.
     *   Action: Add `nurture-long` tag.
@@ -303,7 +362,7 @@ This section provides a general framework and considerations for building out th
 *   **Calendars & Appointments:** Use GHL calendar bookings to trigger WF-8 and potentially the "Hot-Lead Sniffer."
 *   **Trigger Links:** For tracking engagement in emails/SMS and re-engaging leads.
 *   **Email & SMS Templates:** Create and use standardized templates for all communications.
-*   **Reporting:** Leverage GHL's reporting and Smart Lists to monitor workflow performance and SLAs (as noted in Section 7 - soon to be Section 8).
+*   **Reporting:** Leverage GHL's reporting and Smart Lists to monitor workflow performance and SLAs (as noted in Section 8 - soon to be Section 9).
 
 **Webhook Integration (e.g., Website AI Pre-Qualification):**
 
@@ -335,13 +394,13 @@ There are two main ways a lead's pipeline stage will change:
 2.  **Manual Stage Changes by Sales Team (Drag-and-Drop in Pipeline):**
     *   Sales team members might manually drag a lead from one pipeline stage to another. To keep your tag-based automations in sync, you need to react to these manual changes.
     *   **How to Build:**
-        *   For each pipeline stage that a salesperson might manually drag a lead *into*, create a simple GHL Workflow (or a new trigger within an existing workflow, though separate can be cleaner for this specific purpose).
+        *   For each pipeline stage that a salesperson might manually drag a lead *into* (e.g., "Qualified", "Docs Requested", "Docs In", "Document Review", "Ready for Submission", "Offer Out", "Funded", "Needs Re-Consult"), create a simple GHL Workflow (or a new trigger within an existing workflow, though separate can be cleaner for this specific purpose).
         *   **Trigger:** Use the GHL trigger "Pipeline Stage Changed".
             *   Filter this trigger to specify:
                 *   The specific pipeline ("Nexli Funding Pipeline" or your equivalent).
-                *   The specific stage the contact was moved *into* (e.g., "Docs Requested").
+                *   The specific stage the contact was moved *into* (e.g., "Document Review").
         *   **Action:**
-            *   The primary action should be to **add the main defining tag** associated with that new pipeline stage (e.g., if moved to "Docs Requested" stage, the workflow adds the `docs-requested` tag).
+            *   The primary action should be to **add the main defining tag** associated with that new pipeline stage (e.g., if moved to "Document Review" stage, the workflow adds the `docs-under-review` tag).
             *   **Crucial Condition:** Add a condition to this action (often available directly in the "Add Tag" action settings or by using an If/Else branch): "Only add tag if contact does NOT already have tag X" (where X is the tag being added). This prevents re-triggering workflows unnecessarily if the tag was already applied by an automated process and avoids issues with applying a tag that's already present.
             *   Consider if any other tags need to be removed (e.g., a tag from a previous stage if it wasn't automatically removed by another process).
             *   Optionally, you can add a notification to the sales rep or Ops if a manual move has specific implications.
@@ -361,7 +420,7 @@ By setting up this two-way synchronization, your sales team can use the visual p
 
 ⸻
 
-7 SLA & Reporting Quick Notes
+8 SLA & Reporting Quick Notes
 
 - Docs-in → Submitted should average < 8 hours.
   - Smart-List: Tag docs-in AND NOT submitted AND lastTagAddedDate > 8h
@@ -375,7 +434,7 @@ By setting up this two-way synchronization, your sales team can use the visual p
 
 ⸻
 
-8 Calendar Appointment Workflow
+9 Calendar Appointment Workflow
 
 This workflow triggers automatically when any prospect books a call using any of our calendar links. GoHighLevel Calendar ID: QB8uLe2eg2L0jJwAk8Hq
 
@@ -387,7 +446,7 @@ This workflow triggers automatically when any prospect books a call using any of
 
 ⸻
 
-9 TODO List
+10 TODO List
 
 - [x] Review all emails for correct calendar links and automations
 - [ ] Set up business review profiles and monitoring:
@@ -402,7 +461,7 @@ This workflow triggers automatically when any prospect books a call using any of
 
 ⸻
 
-10 AI Caller Workflows
+11 AI Caller Workflows
 
 This section documents the automated AI Caller system and its integration with GoHighLevel (GHL) through an MCP server running on n8n.
 
