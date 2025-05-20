@@ -10,11 +10,12 @@ It explains:
 | 1. Tag Dictionary | What each tag means and who/what applies it |
 | 2. Workflow Summaries | Trigger → goal → key steps for all seven workflows |
 | 3. Global "Hot-Lead Sniffer" Trigger | How re-engaged prospects leap out of nurture |
-| 4. Mermaid Flowchart | Visual map of the entire journey (renders in any Mermaid viewer) |
-| 5. SLA & Reporting Notes | Quick reference for Ops & Management |
-| 6. Calendar Appointment Workflow | Confirmation and reminder sequence for all calendar bookings |
-| 7. TODO List | Outstanding action items and implementation tasks |
-| 8. AI Caller Workflows | Automated AI Caller system and its integration with GoHighLevel (GHL) |
+| 4. High-Level Pipeline Overview | Broad overview of the main sales pipeline stages and workflow touchpoints |
+| 5. Detailed Mermaid Flowchart | Visual map of the entire journey (renders in any Mermaid viewer) |
+| 6. SLA & Reporting Notes | Quick reference for Ops & Management |
+| 7. Calendar Appointment Workflow | Confirmation and reminder sequence for all calendar bookings |
+| 8. TODO List | Outstanding action items and implementation tasks |
+| 9. AI Caller Workflows | Automated AI Caller system and its integration with GoHighLevel (GHL) |
 
 
 ⸻
@@ -85,7 +86,84 @@ ELSE
 
 ⸻
 
-4 Mermaid Flowchart
+4 High-Level Pipeline Overview
+
+This flowchart provides a high-level snapshot of the main sales pipeline stages, corresponding GoHighLevel workflows (WF), and how leads progress through the system, including nurture and re-engagement paths.
+
+```mermaid
+graph TD;
+    A[Website Application] -->|AI Qualified| QS(Pipeline Stage: Qualified);
+    A -->|AI Unqualified| UQ(Pipeline Stage: Unqualified);
+
+    UQ -- "WF-7: Credit Repair" --> ToNurture1(To Nurture);
+    
+    QS -- "WF-1: Prep for Docs" --> DR(Pipeline Stage: Docs Requested);
+    
+    subgraph "WF-2: Document Chase"
+        DR --> WF2_Process[Collect Documents];
+        WF2_Process --> WF2_Decision{Docs Received?};
+        WF2_Decision -- Yes --> DS(Pipeline Stage: Docs In / Ready to Submit);
+        WF2_Decision -- No / Unresponsive --> ToNurture2(To Nurture);
+    end
+
+    subgraph "WF-3: Submission to Lender"
+        DS --> WF3_Process[Package & Submit to Lender];
+        WF3_Process --> WF3_Decision{Lender Offer?};
+        WF3_Decision -- Yes --> HO(Pipeline Stage: Offer Out);
+        WF3_Decision -- No / Lender Decline --> ToNurture3(To Nurture);
+    end
+
+    subgraph "WF-4: Offer Review (Client)"
+        HO --> WF4_Process[Client Reviews Offer];
+        WF4_Process --> WF4_Decision{Client Accepts?};
+        WF4_Decision -- Yes --> F(Pipeline Stage: Funded);
+        WF4_Decision -- No / Offer Declined --> ToNurture4(To Nurture);
+    end
+
+    subgraph "WF-5: Post-Funding"
+        F --> WF5_Process[Review & Referral Asks];
+        WF5_Process --> Done(Process Complete);
+    end
+    
+    ToNurture1 --> N;
+    ToNurture2 --> N;
+    ToNurture3 --> N;
+    ToNurture4 --> N;
+
+    subgraph "WF-6: Long-Term Nurture"
+        N[Nurture Pool] --> N_ReEngage{"Re-engaged? (Hot Lead Sniffer)"};
+        N_ReEngage -- "Yes (No Docs-In)" --> DR;
+        N_ReEngage -- "Yes (Docs-In)" --> DS;
+        N_ReEngage -- No --> N_Loop(Continue Nurture Drips);
+        N_Loop --> N;
+    end
+    
+    subgraph "WF-8: Calendar Automation (Runs in Parallel)"
+        CalendarBooking([Any GHL Calendar Booking]) --> WF8_Process[Confirmations & Reminders];
+    end
+
+    classDef pipelineStage fill:#e6f2ff,stroke:#0052cc,stroke-width:2px,font-weight:bold;
+    class QS,UQ,DR,DS,HO,F pipelineStage
+
+    classDef workflowBlock fill:#f0fff0,stroke:#228B22,stroke-width:1px;
+    class WF2_Process,WF3_Process,WF4_Process,WF5_Process,WF8_Process,N_Loop workflowBlock
+    
+    classDef nurtureNode fill:#fff0f5,stroke:#FF69B4,stroke-width:2px;
+    class N,ToNurture1,ToNurture2,ToNurture3,ToNurture4 nurtureNode
+
+    classDef decision fill:#FFFACD,stroke:#FFD700,stroke-width:1px;
+    class WF2_Decision,WF3_Decision,WF4_Decision,N_ReEngage decision
+
+    classDef entryPoint fill:#F5F5F5,stroke:#808080,stroke-width:2px;
+    class A,CalendarBooking entryPoint
+
+    classDef endPoint fill:#E0E0E0,stroke:#A0A0A0,stroke-width:2px;
+    class Done endPoint
+```
+
+⸻
+
+5 Detailed Mermaid Flowchart
 
 ```mermaid
 graph TD;
@@ -168,7 +246,7 @@ graph TD;
 
 ⸻
 
-5 SLA & Reporting Quick Notes
+6 SLA & Reporting Quick Notes
 
 - Docs-in → Submitted should average < 8 hours.
   - Smart-List: Tag docs-in AND NOT submitted AND lastTagAddedDate > 8h
@@ -182,7 +260,7 @@ graph TD;
 
 ⸻
 
-6 Calendar Appointment Workflow
+7 Calendar Appointment Workflow
 
 This workflow triggers automatically when any prospect books a call using any of our calendar links. GoHighLevel Calendar ID: QB8uLe2eg2L0jJwAk8Hq
 
@@ -194,7 +272,7 @@ This workflow triggers automatically when any prospect books a call using any of
 
 ⸻
 
-7 TODO List
+8 TODO List
 
 - [x] Review all emails for correct calendar links and automations
 - [ ] Set up business review profiles and monitoring:
@@ -209,7 +287,7 @@ This workflow triggers automatically when any prospect books a call using any of
 
 ⸻
 
-8 AI Caller Workflows
+9 AI Caller Workflows
 
 This section documents the automated AI Caller system and its integration with GoHighLevel (GHL) through an MCP server running on n8n.
 
