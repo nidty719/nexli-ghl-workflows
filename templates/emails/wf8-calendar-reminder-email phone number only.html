@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reminder: Your Call with Nexli Funding</title>
+  <style>
+    /* Base styles */
+    body, p, h1, h2, h3, h4, h5, h6 {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+    }
+    p, li {
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+    h1 {
+      color: #2B6B6B;
+      font-size: 30px;
+      margin-bottom: 25px;
+    }
+    a {
+      color: #2B6B6B;
+      text-decoration: underline;
+    }
+    /* Responsive styles */
+    @media only screen and (max-width: 600px) {
+      .full-width {
+        width: 100% !important;
+      }
+      .responsive-padding {
+        padding: 15px !important;
+      }
+      .mobile-text-center {
+        text-align: center !important;
+      }
+      h1 {
+        font-size: 24px !important;
+      }
+      p, li {
+        font-size: 16px !important;
+        line-height: 1.5;
+      }
+    }
+  </style>
+</head>
+<body style="margin: 0; padding: 0; background-color: #f5f5f5; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
+  <!-- Gmail/Outlook fix: Ensure proper rendering -->
+  <div style="display:none; font-size:1px; color:#ffffff; line-height:1px; max-height:0px; max-width:0px; opacity:0; overflow:hidden;">
+    Reminder: Your appointment with Nexli Funding is tomorrow at {{appointment.only_start_time}}. Here's everything you need to know.
+  </div>
+  
+  <center>
+    <!-- Main Table Container -->
+    <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f5f5f5;">
+      <tr>
+        <td align="center" style="padding: 20px 0;">
+          <!-- Email Content Container -->
+          <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" class="full-width" style="width: 600px; background-color: #ffffff; margin: 0 auto; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+            <!-- Header -->
+            <tr>
+              <td style="background-color: #2B6B6B; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+                <table role="presentation" align="center" border="0" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="background-color: #c1ff72; width: 60px; height: 60px; border-radius: 50%; text-align: center; vertical-align: middle;">
+                      <span style="font-size: 32px; font-weight: bold; color: #2B6B6B;">$</span>
+                    </td>
+                    <td width="15"></td>
+                    <td style="font-size: 32px; font-weight: bold; text-align: left;">
+                      <span style="color: #ffffff;">Nexli</span> <span style="color: #c1ff72;">Funding</span>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Status -->
+            <tr>
+              <td style="padding: 30px 20px;" class="responsive-padding">
+                <table width="100%" style="background-color: #fff3cd; border-radius: 8px; margin-bottom: 25px;" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding: 20px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="width: 100%;">
+                        <tr>
+                          <td style="vertical-align: middle; width: 70px; min-width: 70px;">
+                            <table cellpadding="0" cellspacing="0" border="0" style="border-collapse: collapse;">
+                              <tr>
+                                <td style="background-color: #ffc107; width: 60px; height: 60px; border-radius: 50%; text-align: center; vertical-align: middle; color: #664d03; font-size: 26px; font-weight: bold;">
+                                  !
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                          <td width="15"></td>
+                          <td style="vertical-align: middle;">
+                            <div style="font-size: 18px; font-weight: bold; color: #664d03; margin-bottom: 5px;">Appointment Reminder</div>
+                            <div style="color: #664d03; font-size: 15px; line-height: 1.4;">{{appointment.day_of_week}}, {{appointment.only_end_date}} at {{appointment.only_start_time}} {{appointment.timezone}}</div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <h1 style="color: #2B6B6B; font-size: 30px; margin-bottom: 25px;">Your Call is Tomorrow</h1>
+                <p>Hi {{contact.first_name}},</p>
+                <p>This is a friendly reminder that your call with Nexli Funding is scheduled for tomorrow. We're looking forward to speaking with you about your business funding needs.</p>
+                
+                <!-- Appointment Details -->
+                <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background-color: #f8f9fa; border-radius: 8px; margin-bottom: 25px;">
+                  <tr>
+                    <td style="padding: 20px;">
+                      <h2 style="color: #2B6B6B; font-size: 18px; margin-top: 0; margin-bottom: 15px; font-weight: 600;">Appointment Details:</h2>
+                      
+                      <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td style="padding: 8px 0; vertical-align: top; width: 100px;">
+                            <div style="font-weight: bold; color: #666;">Date:</div>
+                          </td>
+                          <td style="padding: 8px 0;">
+                            <div>{{appointment.day_of_week}}, {{appointment.only_end_date}}</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 0; vertical-align: top;">
+                            <div style="font-weight: bold; color: #666;">Time:</div>
+                          </td>
+                          <td style="padding: 8px 0;">
+                            <div>{{appointment.only_start_time}} {{appointment.timezone}}</div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 8px 0; vertical-align: top;">
+                            <div style="font-weight: bold; color: #666;">Where:</div>
+                          </td>
+                          <td style="padding: 8px 0;">
+                            <div>
+                                We'll call you at your registered phone number
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Need to Reschedule -->
+                <table width="100%" style="background-color: #f8f9fa; border-radius: 8px; margin-top: 20px;" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td style="padding: 20px; text-align: center;">
+                      <p style="margin-bottom: 0; font-weight: 600;">Need to reschedule?</p>
+                      <p style="margin-top: 5px;">No problem! <a href="{{appointment.reschedule_link}}" style="color: #2B6B6B; font-weight: 600;">Click here</a> to find a new time that works for you, or call us at <a href="tel:8884331523" style="color: #2B6B6B; font-weight: 600;">(888) 433-1523</a>.</p>
+                    </td>
+                  </tr>
+                </table>
+
+                <p style="margin-top: 30px; font-weight: 600; color: #2B6B6B;">Nexli Funding Team</p>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="background-color: #f5f5f5; padding: 20px; text-align: center; font-size: 12px; color: #666; border-radius: 0 0 8px 8px;">
+                © 2025 Nexli Funding. All rights reserved.<br>
+                <a href="https://www.nexlifunding.com/privacy" style="color: #2B6B6B;">Privacy Policy</a> | 
+                <a href="https://www.nexlifunding.com/terms" style="color: #2B6B6B;">Terms of Service</a><br><br>
+                <span style="font-size: 11px;">3751 N Park Rd, Hollywood, Florida 33021</span>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </center>
+</body>
+</html> 
