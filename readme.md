@@ -358,7 +358,7 @@ This section provides a general framework and considerations for building out th
 
 *   **Workflow Triggers:** Primarily "Contact Tag Added". Also "Customer Replied", "Trigger Link Clicked", "Appointment Status Changed", "Inbound Webhook" (for website/AI integration).
 *   **Workflow Actions:** "Add Tag", "Remove Tag", "Send Email", "Send SMS", "Wait", "If/Else", "Create/Update Opportunity" (to move pipeline stages), "Add Task", "Notify Internal User/Team".
-*   **Custom Fields:** For storing data like `offerId-tracking` or any other specific information not covered by standard fields.
+*   **Custom Fields:** For storing data like `offerId-tracking` or any other specific information not covered by standard fields, especially for managing dynamic lists of required documents if not using a full client portal.
 *   **Calendars & Appointments:** Use GHL calendar bookings to trigger WF-8 and potentially the "Hot-Lead Sniffer."
 *   **Trigger Links:** For tracking engagement in emails/SMS and re-engaging leads.
 *   **Email & SMS Templates:** Create and use standardized templates for all communications.
@@ -377,6 +377,51 @@ This section provides a general framework and considerations for building out th
 *   Verify tags are added/removed correctly, communications are sent, pipeline stages are updated, and contacts move to the correct subsequent workflows or nurture sequences.
 
 This guide provides a starting point. You'll need to adapt and refine these suggestions based on the specific capabilities and UI of your GoHighLevel instance.
+
+**Managing Variable and Additional Document Requests**
+
+A common challenge is handling requests for an initial set of documents (e.g., bank statements) and then needing to request more specific documents (e.g., tax returns, driver's license) based on an initial review or changing circumstances. Here's a strategy to manage this with simplicity for sales and clarity for clients:
+
+*   **Ideal: Client Document Portal with Dynamic Checklist:**
+    *   **Concept:** A secure online portal where each client logs in to see a personalized, dynamic checklist of all documents currently required for their application.
+    *   **Updates:** Operations (Ops) directly updates this checklist in the portal whenever new documents are identified as necessary (e.g., during WF-3 Document Review).
+    *   **Client Action:** Clients upload documents against specific items on their checklist.
+    *   **GHL Integration:** The portal should ideally use webhooks to:
+        *   Notify GHL (and thus Ops/Sales) when a document is uploaded.
+        *   Potentially add a generic tag like `client-doc-uploaded-in-portal` to trigger an internal review or notification.
+    *   **Initial & Follow-up Emails (WF-2):**
+        *   The `docs-requested` email (and any re-request emails if `additional-docs-needed` is applied) would primarily direct the client to their portal: "Please log in to your secure portal at [Portal Link] to view your current document checklist and upload files."
+        *   This keeps email content generic and clean, as the specific list is always live in the portal.
+
+*   **Alternative/Supplement: GHL Custom Field for Document Lists:**
+    *   **Concept:** If a full portal isn't immediately available, or to supplement portal communications, use a multi-line text custom field in GHL on the Contact record (e.g., `Ops: Current Required Docs List`).
+    *   **Updates:** Ops manually maintains this field. When `additional-docs-needed` is applied, Ops *must* update this custom field with the *new and outstanding* list of documents before the next automated email goes out.
+    *   **Initial & Follow-up Emails (WF-2):**
+        *   The `docs-requested` email would merge this custom field: "Our records show we currently need the following to proceed: \n{{contact.custom_ops_current_required_docs_list}}\n Please upload these securely via [Secure Upload Link/Instructions]."
+        *   **Caution:** This requires strict discipline from Ops to ensure the custom field is always accurate before any re-request email is triggered by the `additional-docs-needed` tag. Outdated lists in emails are confusing.
+
+*   **Ops Role is Key for List Management:**
+    *   Regardless of portal or custom field, Ops becomes the central owner of what documents are officially required at any given time.
+    *   When Ops applies the `additional-docs-needed` tag during WF-3 (Document Review), their immediate next step is to update the client's document checklist (in the portal or the GHL custom field).
+    *   The re-application of the `docs-requested` tag then triggers WF-2, which sends an email pointing to the *newly updated* list.
+
+*   **Simplifying for the Sales Team:**
+    *   **Focus:** Salespeople should focus on client communication, relationship building, and guiding clients to the portal (or referring to the latest email from WF-2). They manage the opportunity based on pipeline stage.
+    *   **If Sales Identifies an Ad-Hoc Document Need (outside formal review):**
+        1.  **Recommended Path (Simplest & Most Consistent):** Salesperson informs Ops (e.g., via internal GHL task, internal chat, or a dedicated email).
+        2.  Ops then:
+            *   Updates the official document checklist (portal or GHL custom field).
+            *   If an automated email notification to the client about this new list is desired, Ops ensures the `additional-docs-needed` (or `docs-requested`) tag is (re)applied to trigger WF-2.
+        3.  This keeps the "source of truth" for required documents managed by Ops, ensuring consistency in client communication and internal tracking.
+    *   **Avoid Sales Directly Tagging for Specific Docs (Unless Highly Structured):** While you *could* create tags for every conceivable document (e.g., `request-tax-return-2023`, `request-DL`), this can quickly become unwieldy and hard to manage in GHL workflows for dynamic list generation in emails. It's often simpler to have Ops manage the checklist.
+
+*   **Website Document Collection Point:**
+    *   Your website should have a clear, secure way for prospects/clients to upload documents.
+    *   **Initial Application:** If they apply on your website, it could direct them to create an account for the document portal immediately, or provide a secure upload link for initial documents (like bank statements).
+    *   **Existing Clients:** A "Client Login" or "Upload Documents" button prominent on your site should lead to the portal or a page with secure upload instructions.
+    *   **Security is Paramount:** Ensure any upload mechanism is secure (HTTPS, proper file handling, etc.). Generic email attachments for sensitive documents should be avoided.
+
+This approach centralizes the dynamic list, makes Ops the gatekeeper for what's officially requested (ensuring accuracy), and simplifies the salesperson's role to guiding the client and managing the deal's progression.
 
 **Synchronizing Pipeline Stages and Tag-Driven Automations**
 
@@ -458,6 +503,7 @@ This workflow triggers automatically when any prospect books a call using any of
 - [ ] Test calendar booking flow with confirmation and reminder sequences
 - [ ] Set up automated reports for workflow KPIs
 - [ ] Create training documentation for new sales team members
+- [ ] Design and implement/integrate a client document portal with dynamic checklists and GHL webhook capabilities.
 
 ⸻
 
