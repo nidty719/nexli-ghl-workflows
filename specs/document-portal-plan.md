@@ -1341,6 +1341,506 @@ async def run_comprehensive_agent_validation():
 
 This comprehensive testing framework validates that the AI agent behaves like an experienced underwriter, asking intelligent questions and making professional judgments based on real business context rather than arbitrary rules.
 
+## Real Customer Data Testing Framework
+
+### Testing with Actual Customer Documents
+
+To validate the AI agent with real customer data, we need a framework that can process actual PDF documents and compare AI decisions against expert underwriter analysis.
+
+#### Customer Data Structure
+
+```
+ai_docs/customer_data/
+├── alex/
+│   ├── lead_info.md                    # Customer profile data
+│   ├── documents/
+│   │   ├── bank_statements/
+│   │   │   ├── statement_01_2024.pdf
+│   │   │   ├── statement_02_2024.pdf
+│   │   │   └── statement_03_2024.pdf
+│   │   ├── tax_returns/
+│   │   │   ├── 2023_tax_return.pdf
+│   │   │   └── 2022_tax_return.pdf
+│   │   ├── business_license.pdf
+│   │   └── other_docs/
+│   ├── expert_analysis.md              # Manual underwriter assessment
+│   └── ai_test_results.json           # AI agent output for comparison
+└── [other_customers]/
+```
+
+#### Real Customer Test Case: Alex's Restaurant
+
+Based on the lead info, Alex's profile:
+
+```python
+alex_profile = {
+    "customer_id": "alex_oseguera",
+    "first_name": "Alejandro", 
+    "last_name": "Oseguera",
+    "business_name": "Jb Addison llc",
+    "business_type": "Limited Liability Company (LLC)",
+    "industry": "Restaurant",
+    "annual_revenue": 660000,
+    "funding_amount": 50000,
+    "application_id": "4a12e2d9-6ab4-47cc-ac0a-ca6afe543a3e",
+    "phone": "(773) 677-2749",
+    "email": "alexoseguera@icloud.com",
+    "pre_approval_offers": ["MCA"],
+    "documents_url": "https://nexlifunding.com/document-collection?applicationId=4a12e2d9-6ab4-47cc-ac0a-ca6afe543a3e"
+}
+```
+
+#### Document Processing Test Framework
+
+```python
+import os
+from pathlib import Path
+from pydantic_ai import DocumentUrl
+import json
+from datetime import datetime
+
+class RealCustomerDocumentTester:
+    def __init__(self, customer_data_path: str):
+        self.customer_data_path = Path(customer_data_path)
+        self.test_results = {}
+    
+    async def test_customer_analysis(self, customer_id: str):
+        """Test AI agent with real customer documents"""
+        
+        customer_path = self.customer_data_path / customer_id
+        
+        # Load customer profile
+        profile = self.load_customer_profile(customer_path)
+        
+        # Get document paths
+        document_paths = self.discover_customer_documents(customer_path)
+        
+        # Process documents with AI agent
+        ai_analysis = await self.run_ai_analysis(profile, document_paths)
+        
+        # Load expert analysis for comparison
+        expert_analysis = self.load_expert_analysis(customer_path)
+        
+        # Compare and score AI performance
+        comparison_results = self.compare_analyses(ai_analysis, expert_analysis)
+        
+        # Store test results
+        self.store_test_results(customer_id, ai_analysis, comparison_results)
+        
+        return {
+            "customer_id": customer_id,
+            "ai_analysis": ai_analysis,
+            "expert_analysis": expert_analysis,
+            "comparison": comparison_results,
+            "test_passed": comparison_results["overall_score"] >= 0.8
+        }
+    
+    def load_customer_profile(self, customer_path: Path) -> dict:
+        """Parse lead_info.md to extract customer profile"""
+        lead_info_path = customer_path / "lead_info.md"
+        
+        if not lead_info_path.exists():
+            raise FileNotFoundError(f"lead_info.md not found for customer")
+        
+        profile = {}
+        
+        with open(lead_info_path, 'r') as f:
+            content = f.read()
+            
+        # Parse the key-value format
+        lines = content.split('\n')
+        current_key = None
+        
+        for line in lines:
+            line = line.strip()
+            if not line:
+                continue
+                
+            # Check if this line is a value for the previous key
+            if current_key and not self.is_key_line(line):
+                if current_key in profile:
+                    profile[current_key] += f" {line}"
+                else:
+                    profile[current_key] = line
+            else:
+                # This is a new key
+                current_key = line.lower().replace(' ', '_').replace('-', '_')
+        
+        # Clean and standardize profile data
+        return self.standardize_profile(profile)
+    
+    def is_key_line(self, line: str) -> bool:
+        """Determine if a line is a key vs a value"""
+        # Simple heuristic: keys are usually single words or short phrases
+        # Values often contain numbers, emails, URLs, etc.
+        if '@' in line or 'http' in line or '$' in line:
+            return False
+        if line.replace(' ', '').replace('-', '').isalpha():
+            return True
+        return False
+    
+    def standardize_profile(self, raw_profile: dict) -> dict:
+        """Convert raw profile to standardized format"""
+        mapping = {
+            'first_name': 'first_name',
+            'last_name': 'last_name', 
+            'business_name': 'business_name',
+            'businesstype': 'business_type',
+            'funding_amount': 'funding_amount',
+            'annual_revenue': 'annual_revenue',
+            'industry_app': 'industry',
+            'phone': 'phone',
+            'email': 'email'
+        }
+        
+        standardized = {}
+        for raw_key, value in raw_profile.items():
+            standard_key = mapping.get(raw_key, raw_key)
+            
+            # Clean numeric values
+            if 'amount' in standard_key or 'revenue' in standard_key:
+                value = self.parse_currency(value)
+            
+            standardized[standard_key] = value
+        
+        return standardized
+    
+    def parse_currency(self, value: str) -> float:
+        """Parse currency strings like '$50,000' or '660,000'"""
+        if isinstance(value, (int, float)):
+            return float(value)
+        
+        # Remove currency symbols and commas
+        cleaned = str(value).replace('$', '').replace(',', '').strip()
+        
+        try:
+            return float(cleaned)
+        except ValueError:
+            return 0.0
+    
+    def discover_customer_documents(self, customer_path: Path) -> dict:
+        """Find all customer documents by type"""
+        docs_path = customer_path / "documents"
+        
+        if not docs_path.exists():
+            return {}
+        
+        document_types = {
+            "bank_statements": [],
+            "tax_returns": [],
+            "business_license": [],
+            "financial_statements": [],
+            "other_docs": []
+        }
+        
+        # Scan document folders
+        for doc_type in document_types.keys():
+            type_path = docs_path / doc_type
+            if type_path.exists():
+                # Find all PDFs in this folder
+                pdfs = list(type_path.glob("*.pdf"))
+                document_types[doc_type] = [str(pdf) for pdf in pdfs]
+        
+        return document_types
+    
+    async def run_ai_analysis(self, profile: dict, document_paths: dict) -> dict:
+        """Run the AI agent analysis on customer documents"""
+        
+        # Create dependencies for the AI agent
+        deps = DocumentPortalDependencies(
+            customer_id=profile.get("customer_id", "unknown"),
+            opportunity_id=profile.get("application_id", "test_opp"),
+            loan_products=self.determine_loan_products(profile),
+            profile_data=profile,
+            db_connection=None  # Mock for testing
+        )
+        
+        # Process each document type
+        analysis_results = {}
+        
+        for doc_type, file_paths in document_paths.items():
+            if not file_paths:
+                continue
+                
+            print(f"Processing {doc_type}: {len(file_paths)} documents")
+            
+            if doc_type == "bank_statements":
+                # Process bank statements
+                document_urls = [f"file://{path}" for path in file_paths]
+                result = await document_agent.analyze_bank_statements(
+                    ctx=Mock(deps=deps),
+                    document_urls=document_urls
+                )
+                analysis_results[doc_type] = result
+                
+            elif doc_type == "tax_returns":
+                # Process tax returns
+                document_urls = [f"file://{path}" for path in file_paths] 
+                result = await document_agent.analyze_tax_returns(
+                    ctx=Mock(deps=deps),
+                    document_urls=document_urls
+                )
+                analysis_results[doc_type] = result
+        
+        # Run overall analysis
+        overall_analysis = await document_agent.run(
+            f"""
+            Analyze this loan application for {profile.get('business_name', 'Unknown Business')}.
+            
+            Customer Profile: {profile}
+            Available Documents: {list(document_paths.keys())}
+            
+            Provide your complete underwriting analysis including:
+            1. Risk assessment
+            2. Additional documents needed
+            3. Specific questions for the borrower
+            4. Approval recommendation
+            """,
+            deps=deps
+        )
+        
+        return {
+            "profile": profile,
+            "document_analyses": analysis_results,
+            "overall_analysis": overall_analysis.output,
+            "timestamp": datetime.now().isoformat()
+        }
+    
+    def determine_loan_products(self, profile: dict) -> list:
+        """Determine applicable loan products based on profile"""
+        products = []
+        
+        revenue = profile.get("annual_revenue", 0)
+        industry = profile.get("industry", "").lower()
+        
+        # MCA for restaurants and high-revenue businesses
+        if industry == "restaurant" or revenue > 200000:
+            products.append("MCA")
+        
+        # SBA for established businesses
+        if revenue > 100000:
+            products.append("SBA_LOAN")
+            
+        # Term loans as fallback
+        products.append("TERM_LOAN")
+        
+        return products
+    
+    def load_expert_analysis(self, customer_path: Path) -> dict:
+        """Load manual expert analysis if available"""
+        expert_path = customer_path / "expert_analysis.md"
+        
+        if not expert_path.exists():
+            return {"available": False}
+        
+        with open(expert_path, 'r') as f:
+            content = f.read()
+        
+        # Parse expert analysis
+        # This would be structured markdown with expert opinions
+        return {
+            "available": True,
+            "content": content,
+            "parsed": self.parse_expert_analysis(content)
+        }
+    
+    def parse_expert_analysis(self, content: str) -> dict:
+        """Parse expert analysis markdown into structured data"""
+        # This would implement parsing of expert analysis
+        # For now, return basic structure
+        return {
+            "risk_level": "unknown",
+            "approval_recommendation": "unknown", 
+            "required_documents": [],
+            "concerns": [],
+            "notes": content
+        }
+    
+    def compare_analyses(self, ai_analysis: dict, expert_analysis: dict) -> dict:
+        """Compare AI analysis against expert analysis"""
+        
+        if not expert_analysis.get("available", False):
+            return {
+                "expert_available": False,
+                "message": "No expert analysis available for comparison",
+                "overall_score": 0.5  # Neutral score when no comparison possible
+            }
+        
+        comparison = {
+            "expert_available": True,
+            "risk_assessment_match": False,
+            "document_requests_appropriate": False,
+            "concerns_identified": False,
+            "overall_score": 0.0
+        }
+        
+        # Compare specific aspects
+        expert_parsed = expert_analysis.get("parsed", {})
+        
+        # Risk level comparison
+        ai_risk = ai_analysis.get("overall_analysis", {}).get("underwriting_risk_level", "unknown")
+        expert_risk = expert_parsed.get("risk_level", "unknown")
+        
+        if ai_risk.lower() == expert_risk.lower():
+            comparison["risk_assessment_match"] = True
+        
+        # Document requests appropriateness (manual review needed)
+        ai_requests = ai_analysis.get("overall_analysis", {}).get("additional_document_requests", [])
+        expert_requests = expert_parsed.get("required_documents", [])
+        
+        # Simple overlap check
+        if len(set(ai_requests) & set(expert_requests)) > 0:
+            comparison["document_requests_appropriate"] = True
+        
+        # Calculate overall score
+        scores = [
+            comparison["risk_assessment_match"],
+            comparison["document_requests_appropriate"], 
+            comparison["concerns_identified"]
+        ]
+        
+        comparison["overall_score"] = sum(scores) / len(scores)
+        
+        return comparison
+    
+    def store_test_results(self, customer_id: str, ai_analysis: dict, comparison: dict):
+        """Store test results for review"""
+        results = {
+            "customer_id": customer_id,
+            "test_timestamp": datetime.now().isoformat(),
+            "ai_analysis": ai_analysis,
+            "comparison_results": comparison
+        }
+        
+        # Store in customer folder
+        customer_path = self.customer_data_path / customer_id
+        results_path = customer_path / "ai_test_results.json"
+        
+        with open(results_path, 'w') as f:
+            json.dump(results, f, indent=2, default=str)
+        
+        print(f"Test results saved to {results_path}")
+
+# Usage Example for Testing Alex's Data
+async def test_alex_restaurant():
+    """Test the AI agent with Alex's restaurant data"""
+    
+    tester = RealCustomerDocumentTester("ai_docs/customer_data")
+    
+    # Test Alex's application
+    results = await tester.test_customer_analysis("alex")
+    
+    print(f"Test Results for Alex:")
+    print(f"- AI Risk Assessment: {results['ai_analysis']['overall_analysis'].get('underwriting_risk_level')}")
+    print(f"- Documents Requested: {len(results['ai_analysis']['overall_analysis'].get('additional_document_requests', []))}")
+    print(f"- Test Passed: {results['test_passed']}")
+    
+    # Specific validations for restaurant business
+    ai_requests = results['ai_analysis']['overall_analysis'].get('additional_document_requests', [])
+    
+    restaurant_specific_checks = {
+        "seasonal_analysis": any("seasonal" in req.lower() for req in ai_requests),
+        "cash_handling": any("cash" in req.lower() for req in ai_requests),
+        "merchant_processing": any("processing" in req.lower() or "merchant" in req.lower() for req in ai_requests),
+        "permits_licenses": any("permit" in req.lower() or "license" in req.lower() for req in ai_requests)
+    }
+    
+    print("\nRestaurant-Specific Intelligence:")
+    for check, passed in restaurant_specific_checks.items():
+        print(f"- {check}: {'✅' if passed else '❌'}")
+    
+    return results
+
+# Batch Testing Multiple Customers
+async def run_customer_batch_tests():
+    """Run tests on all available customer data"""
+    
+    tester = RealCustomerDocumentTester("ai_docs/customer_data")
+    customer_data_path = Path("ai_docs/customer_data")
+    
+    results = {}
+    
+    # Find all customer folders
+    for customer_folder in customer_data_path.iterdir():
+        if customer_folder.is_dir():
+            customer_id = customer_folder.name
+            print(f"\nTesting customer: {customer_id}")
+            
+            try:
+                customer_results = await tester.test_customer_analysis(customer_id)
+                results[customer_id] = customer_results
+                
+                print(f"✅ {customer_id}: {'PASSED' if customer_results['test_passed'] else 'FAILED'}")
+                
+            except Exception as e:
+                print(f"❌ {customer_id}: ERROR - {str(e)}")
+                results[customer_id] = {"error": str(e)}
+    
+    # Generate summary report
+    passed = sum(1 for r in results.values() if r.get('test_passed', False))
+    total = len(results)
+    
+    print(f"\n🎯 SUMMARY: {passed}/{total} customers passed AI underwriter validation")
+    
+    return results
+```
+
+#### Setting Up Customer Test Data
+
+To test with real customer documents:
+
+1. **Create customer folders** in `ai_docs/customer_data/[customer_name]/`
+
+2. **Add customer documents** in organized folders:
+   ```
+   alex/
+   ├── documents/
+   │   ├── bank_statements/
+   │   │   ├── january_2024.pdf
+   │   │   ├── february_2024.pdf  
+   │   │   └── march_2024.pdf
+   │   ├── tax_returns/
+   │   │   └── 2023_business_tax_return.pdf
+   │   └── business_license/
+   │       └── restaurant_license.pdf
+   ```
+
+3. **Create expert analysis** (optional) in `expert_analysis.md`:
+   ```markdown
+   # Expert Analysis: Alex's Restaurant
+   
+   ## Risk Assessment: Medium
+   - Seasonal restaurant business with good revenue
+   - Need to verify cash handling procedures
+   
+   ## Required Documents:
+   - 3 months bank statements ✅
+   - Historical statements for seasonal comparison
+   - Merchant processing statements  
+   - Health department permits
+   
+   ## Concerns:
+   - High cash component typical for restaurants
+   - Seasonal revenue fluctuations need verification
+   
+   ## Recommendation: Approve with conditions
+   ```
+
+#### Running Real Customer Tests
+
+```bash
+# Test single customer (Alex)
+python -m pytest test_alex_restaurant()
+
+# Test all customers  
+python -m pytest run_customer_batch_tests()
+
+# Generate comparison report
+python generate_ai_vs_expert_report.py
+```
+
+This framework lets you validate the AI agent against real customer data and actual underwriting decisions, ensuring it performs at professional standards.
+
 ## Deployment Plan
 
 ### Phase 1: Core Development (Weeks 1-3)
